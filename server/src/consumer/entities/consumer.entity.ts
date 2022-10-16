@@ -17,9 +17,9 @@ export class ConsumerEntity {
   @Column({ default: 0 })
   balance: number;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  create_time: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
+  createTime: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  update_time: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'update_time' })
+  updateTime: Date;
 }

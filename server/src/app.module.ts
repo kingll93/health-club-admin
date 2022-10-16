@@ -7,6 +7,7 @@ import envConfig from '../config/env';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConsumerModule } from './consumer/consumer.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ConsumerModule } from './consumer/consumer.module';
       }),
     }),
     ConsumerModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

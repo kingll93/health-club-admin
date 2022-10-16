@@ -1,3 +1,10 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-14 21:23:50
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-16 17:22:09
+ * @Description: 
+ */
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ConsumerService } from './consumer.service';
@@ -27,13 +34,14 @@ export class ConsumerController {
     return this.consumerService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateConsumerDto: UpdateConsumerDto) {
-  //   return this.consumerService.update(+id, updateConsumerDto);
-  // }
+  @ApiOperation({ summary: '更新客户信息' })
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateConsumerDto: UpdateConsumerDto) {
+    return this.consumerService.update(+id, updateConsumerDto);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.consumerService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.consumerService.remove(+id);
+  }
 }

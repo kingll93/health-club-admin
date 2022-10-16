@@ -1,11 +1,11 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer'
 
 import { ConsumerEntity } from './entities/consumer.entity';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
-// import { UpdateConsumerDto } from './dto/update-consumer.dto';
+import { UpdateConsumerDto } from './dto/update-consumer.dto';
 
 export interface ConsumersRo {
   list: ConsumerEntity[];
@@ -20,13 +20,10 @@ export class ConsumerService {
   ) {}
 
   async create(dto: CreateConsumerDto): Promise<ConsumerEntity> {
-    const { name } = dto;
-    if (!name) {
-      throw new HttpException('顾客姓名不能为空', 400);
-    }
-    const result = await this.consumerRepository.findOne({ where: { name } });
+    const { phone } = dto;
+    const result = await this.consumerRepository.findOne({ where: { phone } });
     if (result) {
-      throw new HttpException('顾客已存在', 400);
+      throw new ConflictException('手机号已存在');
     }
     const consumer = plainToInstance(ConsumerEntity, dto)
     return await this.consumerRepository.save(consumer);
@@ -52,5 +49,23 @@ export class ConsumerService {
         id
       }
     });
+  }
+
+  async update(id: number, dto: UpdateConsumerDto) {
+    const exist = await this.consumerRepository.findOne({where: {id}});
+    console.log(exist)
+    if (!exist) {
+      throw new NotFoundException(`id为${id}的客户不存在`);
+    }
+    const updateConsumer = this.consumerRepository.merge(exist, dto);
+    return this.consumerRepository.save(updateConsumer);
+  }
+
+  async remove(id: number) {
+    const exist = await this.consumerRepository.findOne({where: {id}});
+    if (!exist) {
+      throw new NotFoundException(`id为${id}的客户不存在`);
+    }
+    return await this.consumerRepository.remove(exist);
   }
 }
