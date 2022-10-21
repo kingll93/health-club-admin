@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { APP_GUARD } from '@nestjs/core';
 import envConfig from '../config/env';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConsumerModule } from './consumer/consumer.module';
-import { UserModule } from './user/user.module';
+import { AuthGuard } from './modules/auth/guards/auth.guard';
+import { ConsumerModule } from './modules/consumer/consumer.module';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ConsumptionRecordModule } from './modules/consumption-record/consumption-record.module';
+import { RechargeRecordModule } from './modules/recharge-record/recharge-record.module';
 
 @Module({
   imports: [
@@ -33,8 +36,17 @@ import { UserModule } from './user/user.module';
     }),
     ConsumerModule,
     UserModule,
+    AuthModule,
+    ConsumptionRecordModule,
+    RechargeRecordModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService, 
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
+  ],
 })
 export class AppModule {}
