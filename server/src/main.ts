@@ -1,11 +1,15 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as path from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/filter/http-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // https://blog.csdn.net/weixin_38007986/article/details/126910312
+  app.useStaticAssets(path.join(__dirname, '..', 'public'));
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());

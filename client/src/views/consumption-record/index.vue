@@ -22,7 +22,7 @@ const state = reactive({
     page: 1,
     pageSize: 10
   } as ConsumptionRecordQueryParam,
-  list: [] as RechargeRecord[],
+  list: [] as ConsumptionRecord[],
   total: 0,
 });
 
