@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
-import { plainToInstance } from 'class-transformer'
 import * as dayjs from 'dayjs';
 
 import { Consumer } from './entities/consumer.entity';
@@ -21,16 +20,16 @@ export class ConsumerService {
     let { phone, cardNumber, balance } = dto;
     let result = await this.consumerRepository.findOne({ where: { cardNumber } });
     if (result) {
-      throw new ConflictException('会员号已存在');
+      throw new ConflictException(`会员号'${cardNumber}'已存在`);
     }
     result = await this.consumerRepository.findOne({ where: { phone } });
     if (result) {
-      throw new ConflictException('手机号已存在');
+      throw new ConflictException(`手机号'${phone}'已存在`);
     }
     if (typeof balance !== 'number' || balance < 0) {
       balance = 0;
     }
-    const consumer = plainToInstance(Consumer, {
+    const consumer = await this.consumerRepository.create({
       ...dto,
       balance
     })
@@ -38,7 +37,7 @@ export class ConsumerService {
   }
 
   async findAll(dto: FindConsumerDto): Promise<any> {
-    const { page=1, pageSize=10, name, phone, gender, startTime='', endTime=dayjs().format('YYYY-MM-DD HH:mm:ss') } = dto;
+    const { page=1, pageSize=10, name, phone, gender, startTime='', endTime=dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss') } = dto;
     const where = {
       ...!!name ? { name: Like(`%${name}%`) } : null,
       ...!!phone? { code: Like(`%${phone}%`) } : null,
@@ -63,6 +62,11 @@ export class ConsumerService {
     if (!exist) {
       throw new NotFoundException(`id为${id}的客户不存在`);
     }
+
+    if ((exist.phone !== dto.phone) && (await this.consumerRepository.findOne({where: {phone: dto.phone}}))) {
+      throw new ConflictException(`手机号'${dto.phone}'已存在`);
+    }
+
     const updateConsumer = this.consumerRepository.merge(exist, dto);
     return this.consumerRepository.save(updateConsumer);
   }

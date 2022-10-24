@@ -1,4 +1,5 @@
 import { RouteRecordRaw, RouteLocationNormalized } from 'vue-router';
+import { UserData } from './api/login';
 /**
  * App类型声明
  */
@@ -15,7 +16,7 @@ export interface AppState {
  */
 export interface UserState {
   token: string;
-  username: string;
+  info?: UserData;
 }
 
 /**

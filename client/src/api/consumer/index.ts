@@ -10,6 +10,14 @@ export function createConsumer(data: Consumer) {
   });
 }
 
+export function editConsumer(data: Consumer) {
+  return request({
+    url: `/consumer/${data.id}`,
+    method: 'patch',
+    data
+  });
+}
+
 export function getConsumer(id: number) {
   return request({
     url: `/consumer/${id}`,

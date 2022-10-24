@@ -1,4 +1,5 @@
 import { PageOrderParam, PageQueryParam, PageResult } from "../base";
+import { Gender, ConsumptionType, HairType } from "@/utils/enums";
 
 /**
  * 客户类型声明
@@ -7,13 +8,12 @@ import { PageOrderParam, PageQueryParam, PageResult } from "../base";
   id: number;
   name: string;
   phone: string;
-  gender: number;
+  gender: Gender;
   balance: number;
   amount: number;
   cardNumber: string;
-  cardType: 1 | 2 | 3 | 4; // 1: 8折, 2: 7折, 3: 6折, 4: 5折 
-  createTime: Date;
-  updateTime: Date;
+  createTime: string;
+  updateTime: string;
 }
 
 /**
@@ -38,5 +38,15 @@ export type ConsumerPageResult = PageResult<Consumer[]>;
  */
  export interface ConsumerRechargeParam {
   consumerId?: Consumer['id'];
+  amount?: number
+}
+
+/**
+ * 客户消费参数类型声明
+ */
+ export interface ConsumerConsumptionParam {
+  consumerId?: Consumer['id'];
+  consumptionType: ConsumptionType;
+  hairType: HairType;
   amount?: number
 }

@@ -19,7 +19,7 @@ export class User {
   account: string;
 
   @Column()
-  username: string;
+  name: string;
 
   @Column()
   @Exclude()

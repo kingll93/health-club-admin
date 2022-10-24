@@ -1,9 +1,14 @@
 <script lang="ts">
-export const CardTypeMap = {
-  1: '8折卡',
-  2: '7折卡',
-  3: '6折卡',
-  4: '5折卡'
+export const ConsumptionTypeMap = {
+  [ConsumptionType.HAIR_CARE]: '养发',
+  [ConsumptionType.HAIR_DYE]: '染发',
+}
+
+export const HairTypeMap = {
+  [HairType.SHORT]: '短发',
+  [HairType.MIDDLE]: '中发',
+  [HairType.LONE]: '长发',
+  [HairType.EXTRA_LONG]: '超长发',
 }
 
 export default {
@@ -14,15 +19,21 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, toRefs, ref } from 'vue';
 import { ElForm, ElMessageBox, ElMessage } from 'element-plus';
-import { ConsumerQueryParam, Consumer, ConsumerRechargeParam, Dialog } from '@/types';
+import { ConsumerQueryParam, Consumer, ConsumerRechargeParam, ConsumerConsumptionParam, Dialog } from '@/types';
 import { Position, Search, Refresh } from '@element-plus/icons-vue';
 import { getConsumerList, deleteConsumer } from '@/api/consumer';
 import { recharge } from '@/api/recharge-record';
+import { consumption } from '@/api/consumption-record';
 import router from '@/router';
+import { ConsumptionType, Gender, HairType } from '@/utils/enums';
 
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
 const rechargeFormRef = ref(ElForm);
+const consumptionFormRef = ref(ElForm);
+
+const RECHARGE = '充值';
+const CONSUMPTION = '消费';
 
 const state = reactive({
   loading: false,
@@ -38,10 +49,14 @@ const state = reactive({
     title: ''
   } as Dialog,
   currentConsumer: {} as Consumer,
-  rechargeForm: {} as ConsumerRechargeParam
+  rechargeForm: {} as ConsumerRechargeParam,
+  consumptionForm: {
+    consumptionType: ConsumptionType.HAIR_CARE,
+    hairType: HairType.SHORT,
+  } as ConsumerConsumptionParam
 });
 
-const { loading, dateRange, queryParams, list, total, dialog, currentConsumer, rechargeForm } = toRefs(state);
+const { loading, dateRange, queryParams, list, total, dialog, currentConsumer, rechargeForm, consumptionForm } = toRefs(state);
 
 function handleAdd() {
   router.push('/consumer-add');
@@ -85,7 +100,7 @@ function handleDelete(row: Consumer) {
       deleteConsumer(row.id).then(() => {
         ElMessage({
           type: 'success',
-          message: '操作成功'
+          message: '充值成功'
         });
         handleQuery();
       });
@@ -97,7 +112,7 @@ function handleRecharge(row: Consumer) {
   state.currentConsumer = row;
   state.dialog = {
     visible: true,
-    title: '充值'
+    title: RECHARGE
   }
 }
 
@@ -117,12 +132,56 @@ function handleRechargeConfirm() {
   })
 }
 
+function handleConsumption(row: Consumer) {
+  state.currentConsumer = row;
+  getPrice();
+  state.dialog = {
+    visible: true,
+    title: CONSUMPTION
+  }
+}
+
+function handleConsumptionConfirm(row: Consumer) {
+  consumptionFormRef.value.validate((isValid: boolean) => {
+    if (isValid) {
+      state.consumptionForm.consumerId = state.currentConsumer.id;
+      consumption(state.consumptionForm).then(res => {
+        ElMessage({
+          type: 'success',
+          message: '消费成功'
+        });
+        handleCloseDialog();
+        handleQuery();
+      })
+    }
+  })
+}
+
 function handleCloseDialog() {
   rechargeFormRef?.value?.resetFields();
+  consumptionFormRef?.value?.resetFields();
   state.dialog = {
     visible: false,
     title: ''
   }
+}
+
+function getPrice() {
+  const price = {
+    [ConsumptionType.HAIR_CARE]: {
+      [HairType.SHORT]: 100,
+      [HairType.MIDDLE]: 125,
+      [HairType.LONE]: 150,
+      [HairType.EXTRA_LONG]: 180
+    },
+    [ConsumptionType.HAIR_DYE]: {
+      [HairType.SHORT]: 240,
+      [HairType.MIDDLE]: 280,
+      [HairType.LONE]: 300,
+      [HairType.EXTRA_LONG]: 350
+    }
+  }
+  state.consumptionForm.amount = price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
 }
 
 onMounted(() => {
@@ -138,17 +197,17 @@ onMounted(() => {
       </el-form-item>
 
       <el-form-item prop="name">
-        <el-input v-model="queryParams.name" placeholder="姓名" />
+        <el-input v-model="queryParams.name" placeholder="姓名" clearable />
       </el-form-item>
 
       <el-form-item prop="phone">
-        <el-input v-model="queryParams.phone" placeholder="手机号" />
+        <el-input v-model="queryParams.phone" placeholder="手机号" clearable />
       </el-form-item>
 
       <el-form-item prop="gender">
         <el-select v-model="queryParams.gender" placeholder="性别" clearable>
-          <el-option label="男" :value="1" />
-          <el-option label="女" :value="0" />
+          <el-option label="男" :value="Gender.MALEL" />
+          <el-option label="女" :value="Gender.FEMALE" />
         </el-select>
       </el-form-item>
 
@@ -169,12 +228,7 @@ onMounted(() => {
       <el-table-column prop="phone" label="手机号" />
       <el-table-column label="性别">
         <template #default="scope">
-          <span>{{ scope.row.gender === 0 ? '女' : '男' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="会员类型">
-        <template #default="scope">
-          <span>{{ CardTypeMap[scope.row.cardType as Consumer['cardType'] || 1]}}</span>
+          <span>{{ scope.row.gender === Gender.FEMALE ? '女' : '男' }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="amount" label="已消费金额" />
@@ -183,7 +237,7 @@ onMounted(() => {
       <el-table-column label="操作" min-width="150">
         <template #default="scope">
           <el-button text type="primary" @click="handleRecharge(scope.row)">充值</el-button>
-          <el-button text type="primary" @click="handleDelete(scope.row)">消费</el-button>
+          <el-button text type="primary" @click="handleConsumption(scope.row)">消费</el-button>
           <el-button text type="primary" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button text type="primary" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -194,9 +248,10 @@ onMounted(() => {
     <pagination v-if="total > 0" :total="total" v-model:page="queryParams.page" v-model:limit="queryParams.pageSize"
       @pagination="handleQuery" />
 
-    <!-- 充值弹窗 -->
+    <!-- 弹窗 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" @close="handleCloseDialog">
-      <el-form ref="rechargeFormRef" :model="rechargeForm" label-width="100px">
+      <!-- 充值 -->
+      <el-form v-show="dialog.title === RECHARGE" ref="rechargeFormRef" :model="rechargeForm" label-width="100px">
         <el-form-item label="姓名:">
           <el-input disabled :value="currentConsumer.name" />
         </el-form-item>
@@ -211,6 +266,35 @@ onMounted(() => {
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleRechargeConfirm">确定</el-button>
+          <el-button @click="handleCloseDialog">取消</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- 消费 -->
+      <el-form v-show="dialog.title === CONSUMPTION" ref="consumptionFormRef" :model="consumptionForm" label-width="100px">
+        <el-form-item label="姓名:">
+          <el-input disabled :value="currentConsumer.name" />
+        </el-form-item>
+        <el-form-item label="当前余额:">
+          <el-input disabled :value="currentConsumer.balance" />
+        </el-form-item>
+        <el-form-item prop="consumptionType" label="消费类型:">
+          <el-select v-model="consumptionForm.consumptionType" @change="getPrice">
+            <el-option v-for="(label, value) in ConsumptionTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="hairType" label="头发类型:">
+          <el-select v-model="consumptionForm.hairType" @change="getPrice">
+            <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="amount" label="消费金额:" :rules="[
+          { required: true, message: '消费金额不能为空', trigger: 'blur' },
+          { type: 'number', message: '金额必须为数字值', trigger: 'blur'}
+        ]">
+          <el-input v-model.number="consumptionForm.amount" @change="getPrice"/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleConsumptionConfirm">确定</el-button>
           <el-button @click="handleCloseDialog">取消</el-button>
         </el-form-item>
       </el-form>

@@ -6,8 +6,9 @@
  * @Description: 
  */
 export * from './api/login';
-export * from './api/consumer/index'
-export * from './api/recharge-record/index'
+export * from './api/consumer/index';
+export * from './api/recharge-record/index';
+export * from './api/consumption-record/index';
 
 export * from './store';
 

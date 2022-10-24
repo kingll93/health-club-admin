@@ -55,6 +55,14 @@ export const constantRoutes: Array<RouteRecordRaw> = [
           icon: 'money'
         }
       },
+      {
+        path: 'consumption-record',
+        component: () => import('@/views/consumption-record/index.vue'),
+        meta: {
+          title: '消费记录',
+          icon: 'money'
+        }
+      },
     ]
   }
 ];

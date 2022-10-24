@@ -3,7 +3,16 @@ import { IsNumber } from 'class-validator';
 
 export class FindConsumptionRecordDto {
   @ApiPropertyOptional({ description: '客户姓名' })
-  readonly name: string;
+  readonly consumerName: string;
+
+  @ApiPropertyOptional({ description: '操作人' })
+  readonly userName: string;
+
+  @ApiPropertyOptional({ description: '开始时间' })
+  readonly startTime?: string;
+
+  @ApiPropertyOptional({ description: '结束时间' })
+  readonly endTime?: string;
 
   @ApiPropertyOptional({ description: '页码' })
   @IsNumber()

@@ -10,8 +10,8 @@ import { ElForm, ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
 import { Consumer } from '@/types';
 import router from '@/router';
-import { createConsumer, getConsumer } from '@/api/consumer';
-import { CardTypeMap } from './index.vue';
+import { createConsumer, editConsumer, getConsumer } from '@/api/consumer';
+import { Gender } from '@/utils/enums';
 
 const route = useRoute();
 
@@ -20,8 +20,7 @@ const dataFormRef = ref(ElForm);
 
 const state = reactive({
     formData: {
-        cardType: 1,
-        gender: 0
+        gender: Gender.FEMALE
     } as Consumer,
     rules: {
         cardNumber: [
@@ -60,7 +59,8 @@ function handleCancel() {
 function handleSubmit() {
     dataFormRef.value.validate((isValid: boolean) => {
         if (isValid) {
-            createConsumer(state.formData).then(res => {
+            const handler = state.formData.id ? editConsumer : createConsumer;
+            handler(state.formData).then(res => {
                 ElMessage({
                     type: 'success',
                     message: '操作成功',
@@ -92,7 +92,7 @@ onMounted(() => {
             </el-form-item>
 
             <el-form-item prop="cardNumber" label="会员号:">
-                <el-input v-model="formData.cardNumber" placeholder="请输入会员号" />
+                <el-input :disabled="formData.id" v-model="formData.cardNumber" placeholder="请输入会员号" />
             </el-form-item>
 
             <el-form-item prop="phone" label="手机号:">
@@ -106,14 +106,8 @@ onMounted(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item prop="cardType" label="会员类型">
-                <el-select v-model="formData.cardType">
-                    <el-option v-for="(key, value) in CardTypeMap" :key="key" :label="key" :value="Number(value)" />
-                </el-select>
-            </el-form-item>
-
-            <el-form-item prop="balance" label="开卡金额">
-                <el-input type="number" :disabled="formData.id" v-model="formData.balance" placeholder="请输入开卡金额" />
+            <el-form-item prop="balance" :label="formData.id ? '余额' : '开卡金额'">
+                <el-input :disabled="formData.id" v-model.number="formData.balance" placeholder="请输入开卡金额" />
             </el-form-item>
 
             <el-form-item>

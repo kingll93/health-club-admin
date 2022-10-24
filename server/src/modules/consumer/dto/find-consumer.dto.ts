@@ -4,26 +4,26 @@ import { Gender } from 'src/core/enums/common.enum';
 
 export class FindConsumerDto {
   @ApiPropertyOptional({ description: '客户姓名' })
-  readonly name: string;
+  readonly name?: string;
 
   @ApiPropertyOptional({ description: '客户手机号' })
-  readonly phone: string;
+  readonly phone?: string;
 
   @ApiPropertyOptional({ description: '性别' })
   @IsNumber()
-  readonly gender: Gender;
+  readonly gender?: Gender;
 
   @ApiPropertyOptional({ description: '开始时间' })
-  readonly startTime: string;
+  readonly startTime?: string;
 
   @ApiPropertyOptional({ description: '结束时间' })
-  readonly endTime: string;
+  readonly endTime?: string;
 
   @ApiPropertyOptional({ description: '页码' })
   @IsNumber()
-  readonly page: number;
+  readonly page?: number;
 
   @ApiPropertyOptional({ description: '每页条数' })
   @IsNumber()
-  readonly pageSize: number;
+  readonly pageSize?: number;
 }

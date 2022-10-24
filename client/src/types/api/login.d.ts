@@ -13,6 +13,14 @@ export interface LoginResponseData {
   access_token: string;
 }
 
+/**
+ * 用户类型声明
+ */
+ export interface UserData {
+  account: string;
+  name: string;
+}
+
 
 /**
  * 刷新 token 响应类型声明

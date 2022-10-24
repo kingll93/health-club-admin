@@ -8,6 +8,12 @@ export class FindRechargeRecordDto {
   @ApiPropertyOptional({ description: '操作人' })
   readonly userName: string;
 
+  @ApiPropertyOptional({ description: '开始时间' })
+  readonly startTime?: string;
+
+  @ApiPropertyOptional({ description: '结束时间' })
+  readonly endTime?: string;
+
   @ApiPropertyOptional({ description: '页码' })
   @IsNumber()
   readonly page: number;

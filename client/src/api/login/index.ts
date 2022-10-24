@@ -1,4 +1,4 @@
-import { LoginFormData, LoginResponseData, RefreshTokenData } from "@/types";
+import { LoginFormData, LoginResponseData, RefreshTokenData, UserData } from "@/types";
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
 
@@ -22,6 +22,16 @@ export function refreshToken(token: string): AxiosPromise<RefreshTokenData> {
   return request({
     url: `/authority/refresh/${token}`,
     method: "post",
+  });
+}
+
+/**
+ * 获取用户详情
+ */
+ export function getUser(): AxiosPromise<UserData> {
+  return request({
+    url: "/auth/user",
+    method: "get"
   });
 }
 

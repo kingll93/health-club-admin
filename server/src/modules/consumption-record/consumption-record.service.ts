@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Like } from 'typeorm';
-
+import * as dayjs from 'dayjs';
 import { ConsumptionRecord } from './entities/consumption-record.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { ConsumerService } from 'src/modules/consumer/consumer.service';
@@ -34,9 +34,8 @@ export class ConsumptionRecordService {
     }
     consumer.balance = consumer.balance - amount;
     const consumptionRecord: Partial<ConsumptionRecord> = {
-      amount,
-      consumerId: consumer.id,
       createBy: user.id,
+      ...dto
     };
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -60,29 +59,31 @@ export class ConsumptionRecordService {
   }
 
   async findAll(dto: FindConsumptionRecordDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = dto;
+    const { page = 1, pageSize = 10, consumerName, userName, startTime='', endTime=dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss') } = dto;
     const total = Number((await this.dataSource.query(`
       select
         count(*) count
-      from consumption_record
-      left join consumers on consumption_record.consumer_id = consumers.id
-      left join user on consumption_record.create_by = user.id
-      where consumers.name like '%${name || ''}%'
+      from consumption_record cr
+      left join consumers c on cr.consumer_id = c.id
+      left join user u on cr.create_by = u.id
+      where c.name like '%${consumerName || ''}%' and u.name like '%${userName || ''}%' and cr.create_time between '${startTime}' and '${endTime}'
     `))[0].count);
 
     const list = await this.dataSource.query(`
       select 
-        c.name consumer,
-        u.username,
-        cr.*
-      from consumers c 
-      inner join consumption_record as cr on cr.consumer_id = c.id
-      inner join user as u on u.id = cr.create_by where name like '%${ name || ''}%'
+        cr.*,
+        c.name consumerName,
+        u.name userName,
+        date_format(cr.create_time,'%Y-%m-%d %H:%i:%s') as createTime
+      from consumption_record cr
+      left join consumers c on cr.consumer_id = c.id
+      left join user u on cr.create_by = u.id
+      where c.name like '%${consumerName || ''}%' and u.name like '%${userName || ''}%' and cr.create_time between '${startTime}' and '${endTime}'
+      order by cr.create_time DESC
       limit ${pageSize}
       offset ${pageSize * (page - 1)}
     `);
 
-    // const result = await this.consumptionRecordRepository.findAndCount({ join: {}, order: { id: 'ASC', createTime: 'ASC' }, skip: pageSize * (page - 1), take: pageSize })
     return  { list, total }
   }
 

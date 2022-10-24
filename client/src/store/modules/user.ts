@@ -1,13 +1,13 @@
-import { defineStore } from "pinia";
-import { LoginFormData, UserState } from "@/types";
-import { localStorage } from "@/utils/storage";
-import { login, refreshToken } from "@/api/login";
+import { defineStore } from 'pinia';
+import { LoginFormData, UserState } from '@/types';
+import { localStorage } from '@/utils/storage';
+import { login, getUser, refreshToken } from '@/api/login';
 
 const useUserStore = defineStore({
-  id: "user",
+  id: 'user',
   state: (): UserState => ({
-    token: localStorage.get("accessToken") || "",
-    username: "",
+    token: localStorage.get('accessToken') || '',
+    info: undefined
   }),
   getters: {
     userInfo: state => JSON.parse(decodeURIComponent(escape(window.atob(state.token.split('.')[1]))))
@@ -27,19 +27,31 @@ const useUserStore = defineStore({
       return new Promise((resolve, reject) => {
         login({
           account,
-          password,
+          password
         })
-          .then((response) => {
+          .then(response => {
             const { access_token } = response.data;
             const accessToken = 'Bearer ' + access_token;
-            this.username = '';
-            localStorage.set("accessToken", accessToken);
+            localStorage.set('accessToken', accessToken);
             this.token = accessToken;
             resolve(accessToken);
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error);
           });
+      });
+    },
+
+    /**
+     *  获取用户详情
+     */
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        getUser().then(response => {
+          console.log(response.data)
+          this.info = response.data;
+          resolve(response.data)
+        })
       });
     },
 
@@ -49,14 +61,14 @@ const useUserStore = defineStore({
     refreshToken() {
       return new Promise((resolve, reject) => {
         refreshToken(localStorage.get('refresh_token')).then(response => {
-          const { account_token } = response.data
+          const { account_token } = response.data;
           if (account_token) {
             this.token = account_token;
             localStorage.set('account_token', account_token);
           }
           resolve(null);
-        })
-      })
+        });
+      });
     },
 
     /**
@@ -73,14 +85,14 @@ const useUserStore = defineStore({
      * 清除 Token
      */
     resetToken() {
-      return new Promise((resolve) => {
-        localStorage.remove("account_token");
-        localStorage.remove("refresh_token");
+      return new Promise(resolve => {
+        localStorage.remove('account_token');
+        localStorage.remove('refresh_token');
         this.RESET_STATE();
         resolve(null);
       });
-    },
-  },
+    }
+  }
 });
 
 export default useUserStore;
