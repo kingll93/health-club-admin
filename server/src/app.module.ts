@@ -31,7 +31,7 @@ import { RechargeRecordModule } from './modules/recharge-record/recharge-record.
         database: configService.get('DB_DATABASE'), //数据库名
         timezone: '+08:00', //服务器上配置的时区
         autoLoadEntities: true, // 自动加载Entities
-        synchronize: true, //根据实体自动创建数据库表， 生产环境建议关闭
+        synchronize: configService.get('DB_SYNCHRONIZE'), //根据实体自动创建数据库表
       }),
     }),
     ConsumerModule,
