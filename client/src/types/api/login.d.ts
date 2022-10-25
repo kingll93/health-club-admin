@@ -21,6 +21,13 @@ export interface LoginResponseData {
   name: string;
 }
 
+/**
+ * 修改密码参数类型声明
+ */
+ export interface ChangePasswordParam {
+  password: string
+}
+
 
 /**
  * 刷新 token 响应类型声明

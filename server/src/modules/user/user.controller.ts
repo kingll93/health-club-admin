@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  ClassSerializerInterceptor
+  ClassSerializerInterceptor,
+  Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, ChangePassWordDto } from './dto/update-user.dto';
 import { NoAuth } from 'src/core/decorators/auth.decorator';
-
 
 @ApiTags('用户')
 @Controller('user')
@@ -40,12 +40,20 @@ export class UserController {
   // }
 
   // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
+  // update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(id, updateUserDto);
   // }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.userService.remove(+id);
   // }
+
+  @ApiOperation({ summary: '修改密码' })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth()
+  @Patch('change-password')
+  update(@Req() req, @Body() updateUserDto: ChangePassWordDto) {
+    return this.userService.changePassword(req.user, updateUserDto);
+  }
 }

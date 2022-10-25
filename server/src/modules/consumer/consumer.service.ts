@@ -68,7 +68,7 @@ export class ConsumerService {
     }
 
     const updateConsumer = this.consumerRepository.merge(exist, dto);
-    return this.consumerRepository.save(updateConsumer);
+    return await this.consumerRepository.save(updateConsumer);
   }
 
   async remove(id: number) {

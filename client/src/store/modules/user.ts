@@ -86,8 +86,7 @@ const useUserStore = defineStore({
      */
     resetToken() {
       return new Promise(resolve => {
-        localStorage.remove('account_token');
-        localStorage.remove('refresh_token');
+        localStorage.remove('accessToken');
         this.RESET_STATE();
         resolve(null);
       });

@@ -24,9 +24,6 @@ export class Consumer {
   @Column({ default: 0 })
   balance: number;
 
-  @Column({ default: 0 })
-  amount: number;
-
   @Column({ unique: true })
   cardNumber: string;
 

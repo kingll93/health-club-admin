@@ -1,13 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginFormRef"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left">
       <div class="title-container">
         <h3 class="title">会员管理系统</h3>
         <lang-select class="set-language" />
@@ -17,52 +11,26 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.account"
-          placeholder="Account"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="username" v-model="loginForm.account" placeholder="请输入账号" type="text" tabindex="1"
+          auto-complete="on" />
       </el-form-item>
 
-      <el-tooltip
-        :disabled="capslockTooltipDisabled"
-        content="Caps lock is On"
-        placement="right"
-      >
+      <el-tooltip :disabled="capslockTooltipDisabled" content="Caps lock is On" placement="right">
         <el-form-item prop="password">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
-          <el-input
-            ref="passwordRef"
-            :key="passwordType"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup="checkCapslock"
-            @blur="capslockTooltipDisabled = true"
-            @keyup.enter="handleLogin"
-          />
+          <el-input ref="passwordRef" :key="passwordType" v-model="loginForm.password" :type="passwordType"
+            placeholder="请输入密码" tabindex="2" auto-complete="on" @keyup="checkCapslock"
+            @blur="capslockTooltipDisabled = true" @keyup.enter="handleLogin" />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon
-              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-            />
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
 
-      <el-button
-        size="default"
-        :loading="loading"
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click.prevent="handleLogin"
-        >登录</el-button>
+      <el-button size="default" :loading="loading" type="primary" style="width: 100%; margin-bottom: 30px"
+        @click.prevent="handleLogin">登录</el-button>
     </el-form>
 
     <div v-if="showCopyright == true" class="copyright">
@@ -94,15 +62,10 @@ const passwordRef = ref(ElInput);
 
 const state = reactive({
   redirect: '',
-  loginForm: {
-    account: 'admin',
-    password: '111111',
-  } as LoginFormData,
+  loginForm: {} as LoginFormData,
   loginRules: {
     account: [{ required: true, trigger: 'blur' }],
-    password: [
-      { required: true, trigger: 'blur', validator: validatePassword },
-    ],
+    password: [{ required: true, trigger: 'blur' }],
   },
   loading: false,
   passwordType: 'password',
@@ -113,14 +76,6 @@ const state = reactive({
   clientHeight: document.documentElement.clientHeight,
   showCopyright: true,
 });
-
-function validatePassword(rule: any, value: any, callback: any) {
-  if (value.length < 6) {
-    callback(new Error('The password can not be less than 6 digits'));
-  } else {
-    callback();
-  }
-}
 
 const {
   loginForm,
@@ -236,10 +191,12 @@ $cursor: #fff;
     display: inline-block;
     height: 36px;
     width: 85%;
+
     .el-input__wrapper {
       padding: 0;
       background: transparent;
       box-shadow: none;
+
       .el-input__inner {
         background: transparent;
         border: 0px;

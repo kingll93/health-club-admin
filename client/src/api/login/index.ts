@@ -1,4 +1,4 @@
-import { LoginFormData, LoginResponseData, RefreshTokenData, UserData } from "@/types";
+import { LoginFormData, LoginResponseData, RefreshTokenData, UserData, ChangePasswordParam } from "@/types";
 import request from "@/utils/request";
 import { AxiosPromise } from "axios";
 
@@ -32,6 +32,17 @@ export function refreshToken(token: string): AxiosPromise<RefreshTokenData> {
   return request({
     url: "/auth/user",
     method: "get"
+  });
+}
+
+/**
+ * 修改密码
+ */
+ export function changePassword(data: ChangePasswordParam) {
+  return request({
+    url: "/user/change-password",
+    method: "patch",
+    data
   });
 }
 

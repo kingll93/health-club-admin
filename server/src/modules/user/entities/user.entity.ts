@@ -5,6 +5,7 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeUpdate,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { genSalt, hash, compare, genSaltSync, hashSync } from 'bcryptjs';
@@ -50,6 +51,7 @@ export class User {
   updateTime: Date;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async encryptPwd() {
     const salt = await genSalt();
     this.password = await hash(this.password, salt);

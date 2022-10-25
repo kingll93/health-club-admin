@@ -4,7 +4,7 @@
       @toggleClick="toggleSideBar" />
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    
+
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!--        <search id="header-search" class="right-menu-item" />
@@ -25,6 +25,9 @@
             <!-- <router-link to="/">
               <el-dropdown-item>账号设置</el-dropdown-item>
             </router-link> -->
+            <el-dropdown-item divided @click="handleChangePassword">
+              修改密码
+            </el-dropdown-item>
             <el-dropdown-item divided @click="logout">
               登出
             </el-dropdown-item>
@@ -37,8 +40,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ElMessageBox } from 'element-plus';
-
+import { ElMessageBox, ElMessage } from 'element-plus';
+import { changePassword } from '@/api/login';
 import useStore from '@/store';
 
 // 组件依赖
@@ -74,6 +77,33 @@ function logout() {
         router.push(`/login?redirect=${route.fullPath}`);
       });
   });
+}
+
+function handleChangePassword() {
+  ElMessageBox.prompt('请输入新密码', '提示', {
+    inputType: 'password',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+    // inputErrorMessage: '邮箱格式不正确'
+  }).then(({ value }) => {
+    if (!value.trim()) {
+      return
+    }
+    changePassword({
+      password: value.trim()
+    }).then(() => {
+      ElMessage({
+        type: 'success',
+        message: '修改成功,请重新登录'
+      });
+      user
+        .logout()
+        .then(() => {
+          router.push(`/login?redirect=${route.fullPath}`);
+        });
+    })
+  })
 }
 </script>
   
