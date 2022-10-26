@@ -7,6 +7,9 @@ export class ConsumptionRecord {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ unique: true })
+    orderNum: string;
+
     @Column()
     amount: number;
 

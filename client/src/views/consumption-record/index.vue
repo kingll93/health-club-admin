@@ -11,6 +11,8 @@ import { ConsumptionRecord, ConsumptionRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
 import { getConsumptionRecordList } from '@/api/consumption-record';
 import { ConsumptionTypeMap, HairTypeMap } from '../consumer/index.vue';
+import { ConsumptionType, HairType } from '@/utils/enums';
+
 
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
@@ -78,18 +80,19 @@ onMounted(() => {
     </el-form>
 
     <el-table ref="dataTable" v-loading="loading" :data="list">
+      <el-table-column prop="orderNum" label="订单号" />
       <el-table-column prop="consumerName" label="顾客姓名" />
       <el-table-column prop="consumptionType" label="消费类型">
         <template #default="scope">
-          <span>{{ ConsumptionTypeMap[scope.row.consumptionType] }}</span>
+          <span>{{ ConsumptionTypeMap[scope.row.consumptionType as ConsumptionType] }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="hairType" label="头发类型">
         <template #default="scope">
-          <span>{{ HairTypeMap[scope.row.hairType] }}</span>
+          <span>{{ HairTypeMap[scope.row.hairType as HairType] }}</span>
         </template>
       </el-table-column>>
-      <el-table-column prop="amount" label="充值金额" />
+      <el-table-column prop="amount" label="消费金额" />
       <el-table-column prop="createTime" label="消费时间" />
       <el-table-column prop="userName" label="操作人" />
     </el-table>

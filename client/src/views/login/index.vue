@@ -3,11 +3,11 @@
     <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
       label-position="left">
       <div class="title-container">
-        <h3 class="title">会员管理系统</h3>
+        <h3 class="title">海娜韵会员管理系统</h3>
         <lang-select class="set-language" />
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="account">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
@@ -64,8 +64,8 @@ const state = reactive({
   redirect: '',
   loginForm: {} as LoginFormData,
   loginRules: {
-    account: [{ required: true, trigger: 'blur' }],
-    password: [{ required: true, trigger: 'blur' }],
+    account: [{ required: true, trigger: 'blur', message: '请输入账号' }],
+    password: [{ required: true, trigger: 'blur', message: '请输入密码' }],
   },
   loading: false,
   passwordType: 'password',

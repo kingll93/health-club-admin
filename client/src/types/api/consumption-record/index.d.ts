@@ -2,10 +2,11 @@ import { PageOrderParam, PageQueryParam, PageResult } from '../base';
 import { ConsumptionType, HairType } from '@/utils/enums';
 
 /**
- * 充值记录类型声明
+ * 消费记录类型声明
  */
 export interface ConsumptionRecord {
   id: number;
+  orderNum: string,
   consumptionType: ConsumptionType,
   hairType: HairType,
   amount: number;
@@ -15,7 +16,7 @@ export interface ConsumptionRecord {
 }
 
 /**
- * 充值记录查询参数声明
+ * 消费记录查询参数声明
  */
 export interface ConsumptionRecordQueryParam extends PageQueryParam, PageOrderParam {
   consumerName?: string;
@@ -25,6 +26,6 @@ export interface ConsumptionRecordQueryParam extends PageQueryParam, PageOrderPa
 }
 
 /**
- * 充值记录分页列表类型声明
+ * 消费记录分页列表类型声明
  */
  export type ConsumptionRecordPageResult = PageResult<ConsumptionRecord[]>;

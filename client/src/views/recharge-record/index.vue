@@ -77,6 +77,7 @@ onMounted(() => {
     </el-form>
 
     <el-table ref="dataTable" v-loading="loading" :data="list">
+      <el-table-column prop="orderNum" label="订单号" />
       <el-table-column prop="consumerName" label="顾客姓名" />
       <el-table-column prop="amount" label="充值金额" />
       <el-table-column prop="createTime" label="充值时间" />

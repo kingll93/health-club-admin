@@ -31,6 +31,7 @@ export class RechargeRecordService {
     }
     consumer.balance += amount;
     const rechargeRecord: Partial<RechargeRecord> = {
+      orderNum: 'PRE' + dayjs().format('YYYYMMDDHHmmssSSS'),
       amount,
       consumerId: consumer.id,
       createBy: user.id,
@@ -70,6 +71,7 @@ export class RechargeRecordService {
       select
         rr.id,
         rr.amount,
+        rr.orderNum,
         c.name as consumerName,
         u.name as userName,
         date_format(rr.create_time,'%Y-%m-%d %H:%i:%s') as createTime

@@ -40,7 +40,7 @@ export class ConsumerService {
     const { page=1, pageSize=10, name, phone, gender, startTime='', endTime=dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss') } = dto;
     const where = {
       ...!!name ? { name: Like(`%${name}%`) } : null,
-      ...!!phone? { code: Like(`%${phone}%`) } : null,
+      ...!!phone? { phone: Like(`%${phone}%`) } : null,
       ...!!gender ? { gender } : null,
       ...{ createTime: Between(startTime, endTime) },
     }

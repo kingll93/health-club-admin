@@ -5,6 +5,7 @@ import { PageOrderParam, PageQueryParam, PageResult } from '../base';
  */
 export interface RechargeRecord {
   id: number;
+  orderNum: string;
   amount: number;
   consumerName: string;
   userName: string;

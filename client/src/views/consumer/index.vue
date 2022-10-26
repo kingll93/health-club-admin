@@ -184,6 +184,7 @@ function getPrice() {
   state.consumptionForm.amount = price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
 }
 
+
 onMounted(() => {
   handleQuery();
 });
@@ -260,7 +261,7 @@ onMounted(() => {
         </el-form-item>
         <el-form-item prop="amount" label="充值金额:" :rules="[
           { required: true, message: '充值金额不能为空', trigger: 'blur' },
-          { type: 'number', message: '金额必须为数字值', trigger: 'blur'}
+          { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
         ]">
           <el-input v-model.number="rechargeForm.amount" />
         </el-form-item>
@@ -270,7 +271,8 @@ onMounted(() => {
         </el-form-item>
       </el-form>
       <!-- 消费 -->
-      <el-form v-show="dialog.title === CONSUMPTION" ref="consumptionFormRef" :model="consumptionForm" label-width="100px">
+      <el-form v-show="dialog.title === CONSUMPTION" ref="consumptionFormRef" :model="consumptionForm"
+        label-width="100px">
         <el-form-item label="姓名:">
           <el-input disabled :value="currentConsumer.name" />
         </el-form-item>
@@ -279,19 +281,21 @@ onMounted(() => {
         </el-form-item>
         <el-form-item prop="consumptionType" label="消费类型:">
           <el-select v-model="consumptionForm.consumptionType" @change="getPrice">
-            <el-option v-for="(label, value) in ConsumptionTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
+            <el-option v-for="(label, value) in ConsumptionTypeMap" :key="value" :label="label" :value="Number(value)">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="hairType" label="头发类型:">
           <el-select v-model="consumptionForm.hairType" @change="getPrice">
-            <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
+            <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="amount" label="消费金额:" :rules="[
           { required: true, message: '消费金额不能为空', trigger: 'blur' },
-          { type: 'number', message: '金额必须为数字值', trigger: 'blur'}
+          { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
         ]">
-          <el-input v-model.number="consumptionForm.amount" @change="getPrice"/>
+          <el-input v-model.number="consumptionForm.amount" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleConsumptionConfirm">确定</el-button>
