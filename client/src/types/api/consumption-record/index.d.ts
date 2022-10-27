@@ -13,6 +13,7 @@ export interface ConsumptionRecord {
   balance: number;
   consumerName: string;
   userName: string;
+  remark: string;
   createTime: string;
 }
 

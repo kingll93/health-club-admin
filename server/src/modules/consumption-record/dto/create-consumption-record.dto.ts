@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { ConsumptionType, HairType } from "src/core/enums/common.enum";
 
@@ -22,4 +22,7 @@ export class CreateConsumptionRecordDto {
     @ApiProperty({ description: '消费金额' })
     @IsNotEmpty({ message: '缺少消费金额' })
     readonly amount: number;
+
+    @ApiPropertyOptional({ description: '备注' })
+    readonly remark: string;
 }

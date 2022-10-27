@@ -93,6 +93,7 @@ onMounted(() => {
       <el-table-column prop="amount" label="充值金额" />
       <el-table-column prop="balance" label="本次充值后余额" />
       <el-table-column prop="createTime" label="充值时间" />
+      <el-table-column prop="remark" label="备注" />
       <el-table-column prop="userName" label="操作人" />
       <el-table-column label="操作">
         <template #default="scope">

@@ -92,7 +92,7 @@ onMounted(() => {
     </el-form>
 
     <el-table ref="dataTable" v-loading="loading" :data="list">
-      <el-table-column prop="orderNum" label="订单号" />
+      <el-table-column min-width="120" prop="orderNum" label="订单号" />
       <el-table-column prop="consumerName" label="顾客姓名" />
       <el-table-column prop="consumptionType" label="消费类型">
         <template #default="scope">
@@ -107,6 +107,7 @@ onMounted(() => {
       <el-table-column prop="amount" label="消费金额" />
       <el-table-column prop="balance" label="本次消费后余额" />
       <el-table-column prop="createTime" label="消费时间" />
+      <el-table-column prop="remark" label="备注" />
       <el-table-column prop="userName" label="操作人" />
       <el-table-column label="操作">
         <template #default="scope">

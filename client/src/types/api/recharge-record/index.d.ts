@@ -10,6 +10,7 @@ export interface RechargeRecord {
   balance: number;
   consumerName: string;
   userName: string;
+  remark: string;
   createTime: string;
 }
 

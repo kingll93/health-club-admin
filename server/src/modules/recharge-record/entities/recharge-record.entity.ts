@@ -10,14 +10,14 @@ export class RechargeRecord {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, name: 'order_num' })
   orderNum: string;
 
   @Column()
-  amount: number;    
+  amount: number;
   
   @Column()
-  balance: number;
+  remark: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: Date;

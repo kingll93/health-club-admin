@@ -38,7 +38,8 @@ export type ConsumerPageResult = PageResult<Consumer[]>;
  */
  export interface ConsumerRechargeParam {
   consumerId?: Consumer['id'];
-  amount?: number
+  amount?: number;
+  remark?: string;
 }
 
 /**
@@ -48,5 +49,6 @@ export type ConsumerPageResult = PageResult<Consumer[]>;
   consumerId?: Consumer['id'];
   consumptionType: ConsumptionType;
   hairType: HairType;
-  amount?: number
+  amount?: number;
+  remark?: string;
 }

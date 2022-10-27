@@ -37,3 +37,9 @@ export enum HairType {
   EXTRA_LONG = 4,
 }
 
+export enum BalanceType {
+  /** 充值 */
+  RECHARGE = 1,
+  /** 消费 */
+  CONSUMEPTION = 2,
+}

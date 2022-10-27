@@ -232,7 +232,6 @@ onMounted(() => {
           <span>{{ scope.row.gender === Gender.FEMALE ? '女' : '男' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="amount" label="已消费金额" />
       <el-table-column prop="balance" label="余额" />
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column label="操作" min-width="150">
@@ -265,6 +264,9 @@ onMounted(() => {
         ]">
           <el-input v-model.number="rechargeForm.amount" />
         </el-form-item>
+        <el-form-item prop="remark" label="备注:">
+          <el-input type="textarea" v-model.number="rechargeForm.remark" />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleRechargeConfirm">确定</el-button>
           <el-button @click="handleCloseDialog">取消</el-button>
@@ -296,6 +298,9 @@ onMounted(() => {
           { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
         ]">
           <el-input v-model.number="consumptionForm.amount" />
+        </el-form-item>
+        <el-form-item prop="remark" label="备注:">
+          <el-input type="textarea" v-model.number="consumptionForm.remark" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleConsumptionConfirm">确定</el-button>

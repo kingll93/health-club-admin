@@ -11,6 +11,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConsumptionRecordModule } from './modules/consumption-record/consumption-record.module';
 import { RechargeRecordModule } from './modules/recharge-record/recharge-record.module';
+import { BalanceModule } from './modules/balance/balance.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { RechargeRecordModule } from './modules/recharge-record/recharge-record.
     AuthModule,
     ConsumptionRecordModule,
     RechargeRecordModule,
+    BalanceModule,
   ],
   controllers: [AppController],
   providers: [
