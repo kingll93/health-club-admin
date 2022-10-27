@@ -10,6 +10,7 @@ export interface ConsumptionRecord {
   consumptionType: ConsumptionType,
   hairType: HairType,
   amount: number;
+  balance: number;
   consumerName: string;
   userName: string;
   createTime: string;

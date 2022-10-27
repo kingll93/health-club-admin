@@ -36,6 +36,7 @@ export class ConsumptionRecordService {
     const consumptionRecord: Partial<ConsumptionRecord> = {
       createBy: user.id,
       orderNum: 'CON' + dayjs().format('YYYYMMDDHHmmssSSS'),
+      balance: consumer.balance,
       ...dto
     };
     const queryRunner = this.dataSource.createQueryRunner();

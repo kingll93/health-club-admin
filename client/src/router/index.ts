@@ -63,6 +63,14 @@ export const constantRoutes: Array<RouteRecordRaw> = [
           icon: 'money'
         }
       },
+      // {
+      //   path: 'test',
+      //   component: () => import('@/views/test/index.vue'),
+      //   meta: {
+      //     title: 'test',
+      //     icon: 'money'
+      //   }
+      // },
     ]
   }
 ];

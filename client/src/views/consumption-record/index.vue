@@ -12,6 +12,7 @@ import { Search, Refresh } from '@element-plus/icons-vue';
 import { getConsumptionRecordList } from '@/api/consumption-record';
 import { ConsumptionTypeMap, HairTypeMap } from '../consumer/index.vue';
 import { ConsumptionType, HairType } from '@/utils/enums';
+import { printConsumption } from '@/utils/print';
 
 
 // 属性名必须和元素的ref属性值一致
@@ -49,6 +50,17 @@ function resetQuery() {
   delete state.queryParams.endTime;
   queryFormRef.value.resetFields();
   handleQuery();
+}
+
+function handlePrint(row: ConsumptionRecord) {
+  printConsumption({
+    orderNum: row.orderNum,
+    createTime: row.createTime,
+    consumerName: row.consumerName,
+    content: ConsumptionTypeMap[row.consumptionType as ConsumptionType] + '--' + HairTypeMap[row.hairType as HairType],
+    amount: row.amount + '',
+    balance: row.balance + '',
+  })
 }
 
 onMounted(() => {
@@ -93,8 +105,14 @@ onMounted(() => {
         </template>
       </el-table-column>>
       <el-table-column prop="amount" label="消费金额" />
+      <el-table-column prop="balance" label="本次消费后余额" />
       <el-table-column prop="createTime" label="消费时间" />
       <el-table-column prop="userName" label="操作人" />
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button text type="primary" @click="handlePrint(scope.row)">打印</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->

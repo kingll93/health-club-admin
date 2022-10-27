@@ -14,7 +14,10 @@ export class RechargeRecord {
   orderNum: string;
 
   @Column()
-  amount: number;
+  amount: number;    
+  
+  @Column()
+  balance: number;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: Date;

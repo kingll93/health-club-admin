@@ -13,6 +13,9 @@ export class ConsumptionRecord {
     @Column()
     amount: number;
 
+    @Column()
+    balance: number;
+
     @Column({ type: 'tinyint' })
     consumptionType: ConsumptionType;
 

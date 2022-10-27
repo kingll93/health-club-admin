@@ -10,6 +10,7 @@ import { ElForm } from 'element-plus';
 import { RechargeRecord, RechargeRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
 import { getRechargeRecordList } from '@/api/recharge-record';
+import { printRecharge } from '@/utils/print';
 
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
@@ -48,6 +49,16 @@ function resetQuery() {
   handleQuery();
 }
 
+function handlePrint(row: RechargeRecord) {
+  printRecharge({
+    orderNum: row.orderNum,
+    createTime: row.createTime,
+    consumerName: row.consumerName,
+    amount: row.amount + '',
+    balance: row.balance + '',
+  })
+}
+
 onMounted(() => {
   handleQuery();
 });
@@ -58,11 +69,11 @@ onMounted(() => {
   <div class="app-container">
     <el-form ref="queryFormRef" :model="queryParams" :inline="true">
       <el-form-item prop="consumerName">
-        <el-input v-model="queryParams.consumerName" placeholder="顾客姓名" clearable/>
+        <el-input v-model="queryParams.consumerName" placeholder="顾客姓名" clearable />
       </el-form-item>
 
       <el-form-item prop="userName">
-        <el-input v-model="queryParams.userName" placeholder="操作人" clearable/>
+        <el-input v-model="queryParams.userName" placeholder="操作人" clearable />
       </el-form-item>
 
       <el-form-item>
@@ -80,8 +91,14 @@ onMounted(() => {
       <el-table-column prop="orderNum" label="订单号" />
       <el-table-column prop="consumerName" label="顾客姓名" />
       <el-table-column prop="amount" label="充值金额" />
+      <el-table-column prop="balance" label="本次充值后余额" />
       <el-table-column prop="createTime" label="充值时间" />
       <el-table-column prop="userName" label="操作人" />
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button text type="primary" @click="handlePrint(scope.row)">打印</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页工具条 -->

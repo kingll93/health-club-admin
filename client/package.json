@@ -22,6 +22,7 @@
     "path-to-regexp": "^6.2.1",
     "pinia": "^2.0.14",
     "vue": "^3.2.25",
+    "vue-plugin-hiprint": "^0.0.36-fix",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

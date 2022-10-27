@@ -33,6 +33,7 @@ export class RechargeRecordService {
     const rechargeRecord: Partial<RechargeRecord> = {
       orderNum: 'PRE' + dayjs().format('YYYYMMDDHHmmssSSS'),
       amount,
+      balance: consumer.balance,
       consumerId: consumer.id,
       createBy: user.id,
     };
@@ -71,6 +72,7 @@ export class RechargeRecordService {
       select
         rr.id,
         rr.amount,
+        rr.balance,
         rr.orderNum,
         c.name as consumerName,
         u.name as userName,

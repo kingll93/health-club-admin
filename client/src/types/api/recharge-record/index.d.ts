@@ -7,6 +7,7 @@ export interface RechargeRecord {
   id: number;
   orderNum: string;
   amount: number;
+  balance: number;
   consumerName: string;
   userName: string;
   createTime: string;
