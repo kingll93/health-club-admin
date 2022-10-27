@@ -224,7 +224,7 @@ onMounted(() => {
     </el-form>
 
     <el-table ref="dataTable" v-loading="loading" :data="list">
-      <el-table-column prop="cardNumber" label="会员号" />
+      <el-table-column prop="cardNum" label="会员号" />
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="phone" label="手机号" />
       <el-table-column label="性别">

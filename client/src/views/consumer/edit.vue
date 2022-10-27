@@ -23,7 +23,7 @@ const state = reactive({
         gender: Gender.FEMALE
     } as Consumer,
     rules: {
-        cardNumber: [
+        cardNum: [
             {
                 required: true,
                 message: '会员号不能为空',
@@ -91,8 +91,8 @@ onMounted(() => {
                 <el-input v-model="formData.name" placeholder="请输入客户姓名" />
             </el-form-item>
 
-            <el-form-item prop="cardNumber" label="会员号:">
-                <el-input :disabled="formData.id" v-model="formData.cardNumber" placeholder="请输入会员号" />
+            <el-form-item prop="cardNum" label="会员号:">
+                <el-input :disabled="formData.id" v-model="formData.cardNum" placeholder="请输入会员号" />
             </el-form-item>
 
             <el-form-item prop="phone" label="手机号:">

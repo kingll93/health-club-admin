@@ -23,5 +23,5 @@ export class CreateConsumerDto {
 
     @ApiProperty({ description: '会员号' })
     @IsNotEmpty({ message: '缺少会员号' })
-    readonly cardNumber: string;
+    readonly cardNum: string;
 }

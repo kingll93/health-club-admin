@@ -11,7 +11,7 @@ import { Gender, ConsumptionType, HairType } from "@/utils/enums";
   gender: Gender;
   balance: number;
   amount: number;
-  cardNumber: string;
+  cardNum: string;
   createTime: string;
   updateTime: string;
 }

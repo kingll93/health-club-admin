@@ -24,8 +24,8 @@ export class Consumer {
   @Column({ default: 0 })
   balance: number;
 
-  @Column({ unique: true })
-  cardNumber: string;
+  @Column({ unique: true, name: 'card_num' })
+  cardNum: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: string;

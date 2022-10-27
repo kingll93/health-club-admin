@@ -17,10 +17,10 @@ export class ConsumerService {
   ) {}
 
   async create(dto: CreateConsumerDto): Promise<Consumer> { 
-    let { phone, cardNumber, balance } = dto;
-    let result = await this.consumerRepository.findOne({ where: { cardNumber } });
+    let { phone, cardNum, balance } = dto;
+    let result = await this.consumerRepository.findOne({ where: { cardNum } });
     if (result) {
-      throw new ConflictException(`会员号'${cardNumber}'已存在`);
+      throw new ConflictException(`会员号'${cardNum}'已存在`);
     }
     result = await this.consumerRepository.findOne({ where: { phone } });
     if (result) {
