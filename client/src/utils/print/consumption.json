@@ -1,0 +1,199 @@
+{
+  "value": {
+    "aProviderModule": {
+      "panels": [
+        {
+          "index": 0,
+          "height": 110,
+          "width": 63.5,
+          "paperHeader": 0,
+          "paperFooter": 303,
+          "printElements": [
+            {
+              "options": {
+                "left": 10.5,
+                "top": 12,
+                "height": 17,
+                "width": 157.5,
+                "testData": "单据表头",
+                "fontSize": 12,
+                "fontWeight": "700",
+                "textAlign": "center",
+                "hideTitle": true,
+                "title": "海娜韵达州通川西外分店",
+                "right": 165.75,
+                "bottom": 29,
+                "vCenter": 87,
+                "hCenter": 20.5,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "单据表头", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 42,
+                "height": 16,
+                "width": 162,
+                "field": "orderNum",
+                "testData": "CON20221026100352610",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "订单编号",
+                "right": 172.5,
+                "bottom": 58,
+                "vCenter": 91.5,
+                "hCenter": 50,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 67.5,
+                "height": 16,
+                "width": 157.5,
+                "field": "createTime",
+                "testData": "2021-11-11 12:12:00",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "消费日期",
+                "right": 130.5,
+                "bottom": 83.5,
+                "vCenter": 70.5,
+                "hCenter": 75.5,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 94.5,
+                "height": 16,
+                "width": 120,
+                "field": "consumerName",
+                "testData": "xxx",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "会员姓名",
+                "right": 131.25,
+                "bottom": 110.5,
+                "vCenter": 71.25,
+                "hCenter": 102.5,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            { "options": { "left": -85.5, "top": 108, "height": 9, "width": 90 }, "printElementType": { "title": "横线", "type": "hline" } },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 121.5,
+                "height": 16,
+                "width": 157.5,
+                "field": "content",
+                "testData": "染发--长发",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "消费产品",
+                "right": 132,
+                "bottom": 136.75,
+                "vCenter": 72,
+                "hCenter": 128.75,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 147,
+                "height": 16,
+                "width": 120,
+                "field": "amount",
+                "testData": "￥300",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "合计",
+                "right": 132,
+                "bottom": 162.25,
+                "vCenter": 72,
+                "hCenter": 154.25,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 177,
+                "height": 16,
+                "width": 120,
+                "field": "balance",
+                "testData": "1000",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "余额",
+                "right": 131.25,
+                "bottom": 193,
+                "vCenter": 71.25,
+                "hCenter": 185,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            },
+            {
+              "options": {
+                "left": 10.5,
+                "top": 207,
+                "height": 16,
+                "width": 120,
+                "field": "sign",
+                "testData": " ",
+                "fontSize": 6,
+                "fontWeight": "700",
+                "textContentVerticalAlign": "middle",
+                "title": "顾客签字",
+                "right": 127.5,
+                "bottom": 223,
+                "vCenter": 67.5,
+                "hCenter": 215,
+                "coordinateSync": false,
+                "widthHeightSync": false,
+                "qrCodeLevel": 0
+              },
+              "printElementType": { "title": "订单编号", "type": "text" }
+            }
+          ],
+          "paperNumberLeft": 166.5,
+          "paperNumberTop": 283.5,
+          "paperNumberDisabled": true,
+          "fontFamily": "Microsoft YaHei"
+        }
+      ]
+    }
+  },
+  "expire": null
+}
