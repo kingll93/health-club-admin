@@ -1,5 +1,11 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 15:21:53
+ * @Description: 
+ */
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
 import { Gender } from 'src/core/enums/common.enum';
 
 export class FindConsumerDto {
@@ -10,7 +16,6 @@ export class FindConsumerDto {
   readonly phone?: string;
 
   @ApiPropertyOptional({ description: '性别' })
-  @IsNumber()
   readonly gender?: Gender;
 
   @ApiPropertyOptional({ description: '开始时间' })
@@ -20,10 +25,8 @@ export class FindConsumerDto {
   readonly endTime?: string;
 
   @ApiPropertyOptional({ description: '页码' })
-  @IsNumber()
   readonly page?: number;
 
   @ApiPropertyOptional({ description: '每页条数' })
-  @IsNumber()
   readonly pageSize?: number;
 }

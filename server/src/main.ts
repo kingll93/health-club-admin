@@ -1,4 +1,12 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 15:15:32
+ * @Description: 
+ */
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as path from 'path';
@@ -13,6 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalPipes(new ValidationPipe());
 
   // 设置swagger文档
   const config = new DocumentBuilder()

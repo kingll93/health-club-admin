@@ -1,3 +1,10 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 15:50:40
+ * @Description: 
+ */
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between } from 'typeorm';
@@ -44,7 +51,7 @@ export class ConsumerService {
       ...!!gender ? { gender } : null,
       ...{ createTime: Between(startTime, endTime) },
     }
-    const consumers = await this.consumerRepository.findAndCount({ where, order: { createTime: 'DESC' }, skip: pageSize * (page - 1), take: pageSize })
+    const consumers = await this.consumerRepository.findAndCount({ where, order: { cardNum: 'DESC' }, skip: pageSize * (page - 1), take: pageSize })
     consumers[0] = consumers[0].map(consumer => consumer.toResponseData());
     return  { list: consumers[0], total: consumers[1] }
   }

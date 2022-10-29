@@ -1,3 +1,10 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 14:47:43
+ * @Description: 
+ */
 import {
   Column,
   Entity,
@@ -13,10 +20,10 @@ export class RechargeRecord {
   @Column({ unique: true, name: 'order_num' })
   orderNum: string;
 
-  @Column()
+  @Column({ type: 'double' })
   amount: number;
-  
-  @Column()
+
+  @Column({ default: '' })
   remark: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })

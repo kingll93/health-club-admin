@@ -1,3 +1,10 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 15:45:14
+ * @Description: 
+ */
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { ConsumptionType, HairType } from "src/core/enums/common.enum";
@@ -16,7 +23,7 @@ export class CreateConsumptionRecordDto {
     @ApiProperty({ description: '消费类型枚举值 1:养发 2:染发' })
     @IsNumber()
     @IsNotEmpty({ message: '缺少参数"头发类型"枚举值' })
-    readonly HairType: HairType;
+    readonly hairType: HairType;
   
     @IsNumber()
     @ApiProperty({ description: '消费金额' })

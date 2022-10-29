@@ -29,7 +29,7 @@ export class ConsumptionRecordService {
   async create(user: User, dto: CreateConsumptionRecordDto) {
     const orderNum = 'CON' + dayjs().format('YYYYMMDDHHmmssSSS');
 
-    const { consumerId, amount, remark } = dto;
+    const { consumerId, amount } = dto;
 
     const consumer = await this.consumerService.findOne(consumerId);
     if (!consumer) {

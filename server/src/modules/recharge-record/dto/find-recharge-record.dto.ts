@@ -1,5 +1,11 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 15:22:48
+ * @Description: 
+ */
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
 
 export class FindRechargeRecordDto {
   @ApiPropertyOptional({ description: '客户姓名' })
@@ -15,10 +21,8 @@ export class FindRechargeRecordDto {
   readonly endTime?: string;
 
   @ApiPropertyOptional({ description: '页码' })
-  @IsNumber()
   readonly page: number;
 
   @ApiPropertyOptional({ description: '每页条数' })
-  @IsNumber()
   readonly pageSize: number;
 }

@@ -1,3 +1,10 @@
+/*
+ * @Author: wll
+ * @Date: 2022-10-29 14:14:53
+ * @LastEditors: wll
+ * @LastEditTime: 2022-10-29 14:48:56
+ * @Description: 
+ */
 import {
   Column,
   Entity,
@@ -21,7 +28,7 @@ export class Consumer {
   @Column('tinyint')
   gender: number;
 
-  @Column({ default: 0 })
+  @Column({ type: 'double', default: 0 })
   balance: number;
 
   @Column({ unique: true, name: 'card_num' })

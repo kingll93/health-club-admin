@@ -262,7 +262,7 @@ onMounted(() => {
           { required: true, message: '充值金额不能为空', trigger: 'blur' },
           { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
         ]">
-          <el-input v-model.number="rechargeForm.amount" />
+          <el-input type="number" v-model.number="rechargeForm.amount" />
         </el-form-item>
         <el-form-item prop="remark" label="备注:">
           <el-input type="textarea" v-model.number="rechargeForm.remark" />
@@ -297,7 +297,7 @@ onMounted(() => {
           { required: true, message: '消费金额不能为空', trigger: 'blur' },
           { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
         ]">
-          <el-input v-model.number="consumptionForm.amount" />
+          <el-input type="number" v-model.number="consumptionForm.amount" />
         </el-form-item>
         <el-form-item prop="remark" label="备注:">
           <el-input type="textarea" v-model.number="consumptionForm.remark" />
