@@ -123,4 +123,13 @@ export class RechargeRecordService {
   remove(id: number) {
     return `This action removes a #${id} rechargeRecord`;
   }
+
+  async getCountAndAmount() {
+    const count = await this.rechargeRecordRepository.count();
+    const amount = (await this.rechargeRecordRepository.createQueryBuilder().select('sum(amount)', 'sum').getRawOne()).sum
+    return {
+      count,
+      amount
+    }
+  }
 }

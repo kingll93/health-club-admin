@@ -22,6 +22,14 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     redirect: '/consumer',
     children: [
       {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: {
+          title: '数据看板',
+          icon: 'dashboard'
+        }
+      },
+      {
         path: 'consumer',
         component: () => import('@/views/consumer/index.vue'),
         meta: {

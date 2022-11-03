@@ -8,6 +8,7 @@ import { ConsumerModule } from '../consumer/consumer.module';
 @Module({
   imports: [TypeOrmModule.forFeature([RechargeRecord]), ConsumerModule],
   controllers: [RechargeRecordController],
-  providers: [RechargeRecordService]
+  providers: [RechargeRecordService],
+  exports: [RechargeRecordService]
 })
 export class RechargeRecordModule {}

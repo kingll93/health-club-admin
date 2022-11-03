@@ -85,4 +85,9 @@ export class ConsumerService {
     }
     return await this.consumerRepository.remove(exist);
   }
+
+  async getAllBalance() {
+    const res = await this.consumerRepository.createQueryBuilder().select('sum(balance)', 'sum').getRawOne();
+    return res.sum;
+  }
 }
