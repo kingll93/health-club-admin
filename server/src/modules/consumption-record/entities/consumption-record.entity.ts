@@ -20,7 +20,7 @@ export class ConsumptionRecord {
     @Column({ type: 'tinyint', name: 'consumption_type' })
     consumptionType: ConsumptionType;
 
-    @Column({ type: 'tinyint', name: 'hair_type' })
+    @Column({ type: 'tinyint', nullable: true, name: 'hair_type' })
     hairType: HairType;
 
     @Column({ type: 'double' })

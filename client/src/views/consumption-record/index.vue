@@ -101,7 +101,7 @@ onMounted(() => {
       </el-table-column>
       <el-table-column prop="hairType" label="头发类型">
         <template #default="scope">
-          <span>{{ HairTypeMap[scope.row.hairType as HairType] }}</span>
+          <span>{{ scope.row.hairType ? HairTypeMap[scope.row.hairType as HairType] : '-' }}</span>
         </template>
       </el-table-column>>
       <el-table-column prop="amount" label="消费金额" />

@@ -9,7 +9,9 @@ export enum ConsumptionType {
   /** 养发 */
   HAIR_CARE = 1,
   /** 染发 */
-  HAIR_DYE = 2
+  HAIR_DYE = 2,
+  /** 其他 */
+  OTHER = 9,
 }
 
 export enum HairType {

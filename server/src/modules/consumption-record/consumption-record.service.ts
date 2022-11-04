@@ -39,6 +39,9 @@ export class ConsumptionRecordService {
       throw new BadRequestException('客户余额不足');
     }
     consumer.balance = consumer.balance - amount;
+    if (dto.consumptionType == ConsumptionType.OTHER) {
+      delete dto.hairType
+    }
 
     const consumptionRecord = this.consumptionRecordRepository.create({
       orderNum,
@@ -133,16 +136,6 @@ export class ConsumptionRecordService {
       count,
       amount
     }
-  }
-
-  async consumptionCategory() {
-    const count = await this.consumptionRecordRepository.count({
-      where: {
-        hairType: HairType.SHORT,
-        consumptionType: ConsumptionType.HAIR_CARE
-      }
-    })
-    console.log(count)
   }
 
   // update(id: number, updateConsumptionRecordDto: UpdateConsumptionRecordDto) {

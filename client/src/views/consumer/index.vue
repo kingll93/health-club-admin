@@ -2,6 +2,7 @@
 export const ConsumptionTypeMap = {
   [ConsumptionType.HAIR_CARE]: '养发',
   [ConsumptionType.HAIR_DYE]: '染发',
+  [ConsumptionType.OTHER]: '其他'
 }
 
 export const HairTypeMap = {
@@ -181,7 +182,7 @@ function getPrice() {
       [HairType.EXTRA_LONG]: 350
     }
   }
-  state.consumptionForm.amount = price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
+  state.consumptionForm.amount = state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
 }
 
 
@@ -287,7 +288,7 @@ onMounted(() => {
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="hairType" label="头发类型:">
+        <el-form-item v-if="consumptionForm.consumptionType !== ConsumptionType.OTHER" prop="hairType" label="头发类型:">
           <el-select v-model="consumptionForm.hairType" @change="getPrice">
             <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)">
             </el-option>

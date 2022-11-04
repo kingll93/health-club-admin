@@ -15,14 +15,16 @@ export class StatisticService {
 
   async getStatistic() {
     const consumerBalance = await this.consumerService.getAllBalance();
-    const { count: consumptionCount, amount: consumptionAmount } = await this.consumptionRecordService.getCountAndAmount();
-    const { count: rechargeCount, amount: rechangeAmount } = await this.rechargeRecordService.getCountAndAmount();
+    const { count: consumptionCount, amount: consumptionAmount } =
+      await this.consumptionRecordService.getCountAndAmount();
+    const { count: rechargeCount, amount: rechangeAmount } =
+      await this.rechargeRecordService.getCountAndAmount();
     return {
       consumerBalance,
       consumptionCount,
       consumptionAmount,
       rechargeCount,
-      rechangeAmount
+      rechangeAmount,
     };
   }
 
@@ -34,10 +36,19 @@ export class StatisticService {
         date_format(create_time, '%Y-%m-%d') date
       from consumption_record
       group by date
-    `)
+    `);
   }
 
   async consumptionCategory() {
-    return this.consumptionRecordService.consumptionCategory();
+    return await this.dataSource.query(`
+      select
+        date_format( create_time, '%Y-%m-%d' ) date,
+        sum(case when consumption_type = 1 then 1 else 0 end) hairCare,
+        sum(case when consumption_type = 2 then 1 else 0 end) hairDye,
+        sum(case when consumption_type = 9 then 1 else 0 end) other
+      from
+        consumption_record 
+      group by date
+    `);
   }
 }

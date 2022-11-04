@@ -48,7 +48,7 @@ export type ConsumerPageResult = PageResult<Consumer[]>;
  export interface ConsumerConsumptionParam {
   consumerId?: Consumer['id'];
   consumptionType: ConsumptionType;
-  hairType: HairType;
+  hairType?: HairType;
   amount?: number;
   remark?: string;
 }
