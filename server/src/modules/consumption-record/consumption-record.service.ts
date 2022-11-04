@@ -14,7 +14,7 @@ import { ConsumerService } from 'src/modules/consumer/consumer.service';
 import { CreateConsumptionRecordDto } from './dto/create-consumption-record.dto';
 import { UpdateConsumptionRecordDto } from './dto/update-consumption-record.dto';
 import { FindConsumptionRecordDto } from './dto/find-consumption-record.dto';
-import { BalanceType } from 'src/core/enums/common.enum';
+import { BalanceType, ConsumptionType, HairType } from 'src/core/enums/common.enum';
 
 
 @Injectable()
@@ -133,6 +133,16 @@ export class ConsumptionRecordService {
       count,
       amount
     }
+  }
+
+  async consumptionCategory() {
+    const count = await this.consumptionRecordRepository.count({
+      where: {
+        hairType: HairType.SHORT,
+        consumptionType: ConsumptionType.HAIR_CARE
+      }
+    })
+    console.log(count)
   }
 
   // update(id: number, updateConsumptionRecordDto: UpdateConsumptionRecordDto) {

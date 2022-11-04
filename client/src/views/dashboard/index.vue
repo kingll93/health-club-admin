@@ -7,6 +7,8 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, toRefs, ref } from 'vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
+import AmountBar from './components/AmountBar.vue';
+import CountLine from './components/CountLine.vue';
 import { getStatistic } from '@/api/dashboard';
 import { Statistic } from '@/types';
 
@@ -40,7 +42,7 @@ onMounted(() => {
                     </div>
                     <div class="card-panel-description">
                         <div class="card-panel-text">总余额</div>
-                        <div class="card-panel-num">{{statistic.consumerBalance}}</div>
+                        <div class="card-panel-num">{{ statistic.consumerBalance }}</div>
                     </div>
                 </div>
             </el-col>
@@ -62,7 +64,7 @@ onMounted(() => {
                     </div>
                     <div class="card-panel-description">
                         <div class="card-panel-text">总消费金额</div>
-                        <div class="card-panel-num">{{statistic.consumptionAmount}}</div>
+                        <div class="card-panel-num">{{ statistic.consumptionAmount }}</div>
                     </div>
                 </div>
             </el-col>
@@ -73,9 +75,20 @@ onMounted(() => {
                     </div>
                     <div class="card-panel-description">
                         <div class="card-panel-text">总充值金额</div>
-                        <div class="card-panel-num">{{statistic.rechangeAmount}}</div>
+                        <div class="card-panel-num">{{ statistic.rechangeAmount }}</div>
                     </div>
                 </div>
+            </el-col>
+        </el-row>
+        <!-- Echarts 图表 -->
+        <el-row :gutter="40">
+            <el-col :span="24" class="card-panel__col">
+                <AmountBar id="amountBar" height="400px" width="100%" class="chart-container" />
+            </el-col>
+        </el-row>
+        <el-row :gutter="40">
+            <el-col :span="24" class="card-panel__col">
+                <CountLine id="countLine" height="400px" width="100%" class="chart-container" />
             </el-col>
         </el-row>
     </div>
@@ -189,6 +202,10 @@ onMounted(() => {
                 text-align: right;
             }
         }
+    }
+
+    .chart-container {
+        background: #ffffff;
     }
 }
 </style>
