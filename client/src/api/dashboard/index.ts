@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { Statistic, DailyConsumption } from '@/types';
+import { Statistic, DailyList, StatisticQueryParam } from '@/types';
 import { AxiosPromise } from 'axios';
 
 export function getStatistic(): AxiosPromise<Statistic> {
@@ -9,9 +9,16 @@ export function getStatistic(): AxiosPromise<Statistic> {
   });
 }
 
-export function getDailyConsumption(): AxiosPromise<DailyConsumption> {
+export function getDailyConsumption(): AxiosPromise<DailyList> {
   return request({
     url: '/statistic/daily-consumption',
+    method: 'get'
+  });
+}
+
+export function getDailyRecharge(): AxiosPromise<DailyList> {
+  return request({
+    url: '/statistic/daily-recharge',
     method: 'get'
   });
 }

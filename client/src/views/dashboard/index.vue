@@ -7,8 +7,9 @@ export default {
 <script setup lang="ts">
 import { onMounted, reactive, toRefs, ref } from 'vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
-import AmountBar from './components/AmountBar.vue';
-import CountLine from './components/CountLine.vue';
+import ConsumptionChart from './components/ConsumptionChart.vue';
+import RechargeChart from './components/RechargeChart.vue';
+// import CategoryPie from './components/CategoryPie.vue';
 import { getStatistic } from '@/api/dashboard';
 import { Statistic } from '@/types';
 
@@ -82,15 +83,16 @@ onMounted(() => {
         </el-row>
         <!-- Echarts 图表 -->
         <el-row :gutter="40">
-            <el-col :span="24" class="card-panel__col">
-                <AmountBar id="amountBar" height="400px" width="100%" class="chart-container" />
+            <el-col :span="12" class="card-panel__col">
+                <ConsumptionChart id="consumptionChart" height="400px" width="100%" class="chart-container" />
+            </el-col>
+            <el-col :span="12" class="card-panel__col">
+                <RechargeChart id="rechargeChart" height="400px" width="100%" class="chart-container" />
             </el-col>
         </el-row>
-        <el-row :gutter="40">
-            <el-col :span="24" class="card-panel__col">
-                <CountLine id="countLine" height="400px" width="100%" class="chart-container" />
-            </el-col>
-        </el-row>
+        <!-- <el-row :gutter="40">
+            <CategoryPie id="categoryPie" height="400px" width="100%" class="chart-container" />
+        </el-row> -->
     </div>
 </template>
 

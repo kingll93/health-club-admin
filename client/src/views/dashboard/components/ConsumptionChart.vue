@@ -14,7 +14,6 @@ import { init, EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import resize from '@/utils/resize';
 import { getDailyConsumption } from '@/api/dashboard';
-import { da } from 'element-plus/es/locale';
 
 const props = defineProps({
   id: {
@@ -47,7 +46,7 @@ function initChart() {
     barChart.setOption({
       title: {
         show: true,
-        text: '消费额总览',
+        text: '消费总览',
         x: 'center',
         padding: 15,
         textStyle: {
@@ -86,7 +85,6 @@ function initChart() {
         {
           name: '单位（元）',
           type: 'value',
-          interval: 2000,
           axisLabel: {
             formatter: '{value} ',
           },

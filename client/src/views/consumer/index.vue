@@ -182,7 +182,7 @@ function getPrice() {
       [HairType.EXTRA_LONG]: 350
     }
   }
-  state.consumptionForm.amount = state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
+  state.consumptionForm.amount = state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType!]
 }
 
 
