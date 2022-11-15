@@ -3,7 +3,7 @@
  * @Date: 2022-10-29 14:14:53
  * @LastEditors: wll
  * @LastEditTime: 2022-10-29 15:15:32
- * @Description: 
+ * @Description:
  */
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -13,9 +13,12 @@ import * as path from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/filter/http-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
+import { Logger } from './log/logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: new Logger(),
+  });
   // https://blog.csdn.net/weixin_38007986/article/details/126910312
   app.useStaticAssets(path.join(__dirname, '..', 'public'));
   app.setGlobalPrefix('api');
