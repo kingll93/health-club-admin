@@ -5,6 +5,13 @@ export enum Gender {
   MALEL = 1,
 }
 
+export enum CardType {
+  /** 散客 */
+  GUEST = 0,
+  /** 会员 */
+  MEMBER = 1,
+}
+
 export enum UserType {
   /** 管理员 */
   ADMIN = 0,

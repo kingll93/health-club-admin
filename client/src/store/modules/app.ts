@@ -1,6 +1,8 @@
 import { AppState } from '@/types';
 import { localStorage } from '@/utils/storage';
 import { defineStore } from 'pinia';
+import { TodayStatistic } from '@/types';
+import { getTodayStatistic } from '@/api/dashboard';
 
 const useAppStore = defineStore({
   id: 'app',
@@ -12,7 +14,8 @@ const useAppStore = defineStore({
         : true,
       withoutAnimation: false
     },
-    size: localStorage.get('size') || 'default' // 'default' 'small' 'large'
+    size: localStorage.get('size') || 'default', // 'default' 'small' 'large'
+    todayStatistic: {} as TodayStatistic
   }),
   actions: {
     toggleSidebar() {
@@ -36,6 +39,11 @@ const useAppStore = defineStore({
       this.size = size;
       localStorage.set('size', size);
     },
+    getTodayStatistic() {
+      getTodayStatistic().then(res => {
+        this.todayStatistic = res.data;
+      })
+    }
   }
 });
 

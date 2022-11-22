@@ -1,5 +1,6 @@
 import { RouteRecordRaw, RouteLocationNormalized } from 'vue-router';
 import { UserData } from './api/login';
+import { TodayStatistic } from './api/dashboard';
 /**
  * App类型声明
  */
@@ -10,6 +11,7 @@ export interface AppState {
     withoutAnimation: boolean;
   };
   size: string;
+  todayStatistic: TodayStatistic;
 }
 /**
  * 用户状态类型声明

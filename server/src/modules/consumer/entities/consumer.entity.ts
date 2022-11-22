@@ -13,6 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import * as dayjs from 'dayjs';
+import { Gender, CardType } from 'src/core/enums/common.enum';
 
 @Entity('consumers')
 export class Consumer {
@@ -26,13 +27,16 @@ export class Consumer {
   phone: string;
 
   @Column('tinyint')
-  gender: number;
+  gender: Gender;
 
   @Column({ type: 'double', default: 0 })
   balance: number;
 
   @Column({ unique: true, name: 'card_num' })
   cardNum: string;
+
+  @Column({ type: 'tinyint', name: 'card_type', default: CardType.MEMBER })
+  cardType: CardType;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: string;

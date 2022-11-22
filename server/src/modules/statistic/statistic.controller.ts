@@ -19,6 +19,13 @@ export class StatisticController {
     return this.statisticService.getStatistic();
   }
 
+  @ApiOperation({ summary: '当日数据统计' })
+  @ApiBearerAuth()
+  @Get('today')
+  getTodayStatistic() {
+    return this.statisticService.getTodayStatistic();
+  }
+
   @ApiOperation({ summary: '每日消费统计' })
   @ApiBearerAuth()
   @Get('daily-consumption')

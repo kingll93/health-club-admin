@@ -129,15 +129,6 @@ export class ConsumptionRecordService {
     return `This action returns a #${id} consumptionRecord`;
   }
 
-  async getCountAndAmount() {
-    const count = await this.consumptionRecordRepository.count();
-    const amount = (await this.consumptionRecordRepository.createQueryBuilder().select('sum(amount)', 'sum').getRawOne()).sum
-    return {
-      count,
-      amount
-    }
-  }
-
   // update(id: number, updateConsumptionRecordDto: UpdateConsumptionRecordDto) {
   //   return `This action updates a #${id} consumptionRecord`;
   // }

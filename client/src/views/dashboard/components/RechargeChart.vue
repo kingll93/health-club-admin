@@ -93,13 +93,13 @@ function initChart() {
       series: [
         {
           type: 'bar',
-          data: data.map(item => item.sum),
+          data: data.map(item => item.amount),
           barWidth: 20,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#25d73c' },
-              { offset: 0.5, color: '#1bc23d' },
-              { offset: 1, color: '#179e61' },
+              { offset: 0, color: '#ffba1a' },
+              { offset: 0.5, color: '#e1745e' },
+              { offset: 1, color: '#f35838' },
             ]),
           },
         },

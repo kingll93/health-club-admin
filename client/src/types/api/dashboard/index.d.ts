@@ -2,19 +2,35 @@
  * 统计结果类型声明
  */
 export interface Statistic {
-  consumerBalance: string;
-  consumptionCount: string;
-  consumptionAmount: string;
-  rechargeCount: string;
-  rechangeAmount: string;
+  guestConsumption: number;
+  memberConsumption: number;
+  memberRechange: number;
+  balance: number;
+}
+
+/**
+ * 当日统计结果类型声明
+ */
+export interface TodayStatistic {
+  guestConsumption: number;
+  memberConsumption: number;
+  memberRechange: number;
 }
 
 /**
  * 每日消费统计类型声明
  */
 export type DailyList = Array<{
-  sum: number;
-  count: number;
+  guestConsumption: number;
+  memberConsumption: number;
+  date: string;
+}>;
+
+/**
+ * 每日充值统计类型声明
+ */
+export type DailyRechargeList = Array<{
+  amount: number;
   date: string;
 }>;
 
@@ -22,14 +38,14 @@ export type DailyList = Array<{
  * 消费类型统计类型声明
  */
 export type ConsumptionCategory = Array<{
-  type: number,
-  value: number
+  type: number;
+  value: number;
 }>;
 
 /**
  * 统计查询参数类型声明
  */
- export interface StatisticQueryParam {
+export interface StatisticQueryParam {
   startTime?: string;
   endTime?: string;
 }

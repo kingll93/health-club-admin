@@ -5,6 +5,8 @@
 
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
+    <div class="today-datas">今日消费总消费：{{todayStatistic.guestConsumption + todayStatistic.memberConsumption}}元，会员消费：{{todayStatistic.memberConsumption}}元，散客消费：{{todayStatistic.guestConsumption}}元；总充值：{{todayStatistic.memberRechange}}元。</div>
+
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <!--        <search id="header-search" class="right-menu-item" />
@@ -38,7 +40,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { changePassword } from '@/api/login';
@@ -60,6 +62,7 @@ const router = useRouter();
 
 const sidebar = computed(() => app.sidebar);
 const device = computed(() => app.device);
+const todayStatistic = computed(() => app.todayStatistic);
 
 function toggleSideBar() {
   app.toggleSidebar();
@@ -105,6 +108,10 @@ function handleChangePassword() {
     })
   })
 }
+
+onMounted(() => {
+  app.getTodayStatistic();
+})
 </script>
   
 <style lang="scss" scoped>
@@ -121,6 +128,7 @@ ul {
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   border-bottom: 1px solid #d8dce5;
+  text-align: center;
 
   .hamburger-container {
     line-height: 46px;
@@ -137,6 +145,13 @@ ul {
 
   .breadcrumb-container {
     float: left;
+  }
+
+  .today-datas {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    color: var(--el-color-primary);
   }
 
   .right-menu {

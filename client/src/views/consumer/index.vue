@@ -27,6 +27,7 @@ import { recharge } from '@/api/recharge-record';
 import { consumption } from '@/api/consumption-record';
 import router from '@/router';
 import { ConsumptionType, Gender, HairType } from '@/utils/enums';
+import useStore from '@/store';
 
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
@@ -35,6 +36,8 @@ const consumptionFormRef = ref(ElForm);
 
 const RECHARGE = '充值';
 const CONSUMPTION = '消费';
+
+const { app } = useStore();
 
 const state = reactive({
   loading: false,
@@ -101,7 +104,7 @@ function handleDelete(row: Consumer) {
       deleteConsumer(row.id).then(() => {
         ElMessage({
           type: 'success',
-          message: '充值成功'
+          message: '操作成功'
         });
         handleQuery();
       });
@@ -124,10 +127,11 @@ function handleRechargeConfirm() {
       recharge(state.rechargeForm).then(res => {
         ElMessage({
           type: 'success',
-          message: '操作成功'
+          message: '充值成功'
         });
         handleCloseDialog();
         handleQuery();
+        app.getTodayStatistic();
       })
     }
   })
@@ -153,6 +157,7 @@ function handleConsumptionConfirm(row: Consumer) {
         });
         handleCloseDialog();
         handleQuery();
+        app.getTodayStatistic();
       })
     }
   })

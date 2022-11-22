@@ -42,30 +42,19 @@ onMounted(() => {
                         <svg-icon icon-class="money" class-name="card-panel-icon" />
                     </div>
                     <div class="card-panel-description">
-                        <div class="card-panel-text">总余额</div>
-                        <div class="card-panel-num">{{ statistic.consumerBalance }}</div>
+                        <div class="card-panel-text">会员余额</div>
+                        <div class="card-panel-num">{{ statistic.balance }}</div>
                     </div>
                 </div>
             </el-col>
-            <!-- <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
-                <div class="card-panel">
-                    <div class="card-panel-icon-wrapper icon-shopping">
-                        <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-                    </div>
-                    <div class="card-panel-description">
-                        <div class="card-panel-text">总消费笔数</div>
-                        <div class="card-panel-num">{{statistic.consumptionCount}}</div>
-                    </div>
-                </div>
-            </el-col> -->
             <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
                 <div class="card-panel">
                     <div class="card-panel-icon-wrapper icon-message">
                         <svg-icon icon-class="money" class-name="card-panel-icon" />
                     </div>
                     <div class="card-panel-description">
-                        <div class="card-panel-text">总消费金额</div>
-                        <div class="card-panel-num">{{ statistic.consumptionAmount }}</div>
+                        <div class="card-panel-text">会员消费</div>
+                        <div class="card-panel-num">{{ statistic.memberConsumption }}</div>
                     </div>
                 </div>
             </el-col>
@@ -75,8 +64,19 @@ onMounted(() => {
                         <svg-icon icon-class="money" class-name="card-panel-icon" />
                     </div>
                     <div class="card-panel-description">
-                        <div class="card-panel-text">总充值金额</div>
-                        <div class="card-panel-num">{{ statistic.rechangeAmount }}</div>
+                        <div class="card-panel-text">会员充值</div>
+                        <div class="card-panel-num">{{ statistic.memberRechange }}</div>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6" class="card-panel__col">
+                <div class="card-panel">
+                    <div class="card-panel-icon-wrapper icon-shopping">
+                        <svg-icon icon-class="money" class-name="card-panel-icon" />
+                    </div>
+                    <div class="card-panel-description">
+                        <div class="card-panel-text">散客消费</div>
+                        <div class="card-panel-num">{{ statistic.guestConsumption }}</div>
                     </div>
                 </div>
             </el-col>

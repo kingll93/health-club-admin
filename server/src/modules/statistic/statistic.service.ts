@@ -1,42 +1,72 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { ConsumerService } from '../consumer/consumer.service';
-import { ConsumptionRecordService } from '../consumption-record/consumption-record.service';
-import { RechargeRecordService } from '../recharge-record/recharge-record.service';
 import { StatisticDto } from './dto/statistic.dto';
 import * as dayjs from 'dayjs';
+import { CardType } from 'src/core/enums/common.enum';
+import { Consumer } from '../consumer/entities/consumer.entity';
 
 @Injectable()
 export class StatisticService {
   constructor(
-    private readonly dataSource: DataSource,
-    private readonly consumerService: ConsumerService,
-    private readonly consumptionRecordService: ConsumptionRecordService,
-    private readonly rechargeRecordService: RechargeRecordService,
+    private readonly dataSource: DataSource
   ) {}
 
   async getStatistic() {
-    const consumerBalance = await this.consumerService.getAllBalance();
-    const { count: consumptionCount, amount: consumptionAmount } =
-      await this.consumptionRecordService.getCountAndAmount();
-    const { count: rechargeCount, amount: rechangeAmount } =
-      await this.rechargeRecordService.getCountAndAmount();
+    const { guestConsumption, memberConsumption } = (await this.dataSource.query(`
+      select 
+        sum(case when card_type = ${CardType.GUEST} then cr.amount else 0 end) guestConsumption,
+        sum(case when card_type = ${CardType.MEMBER} then cr.amount else 0 end) memberConsumption
+      from consumption_record cr
+      left join consumers c on c.id = cr.consumer_id
+    `))[0];
+    const { memberRechange } = (await this.dataSource.query(`
+      select 
+        sum(rr.amount) memberRechange
+      from recharge_record rr
+      left join consumers c on c.id = rr.consumer_id
+      where c.card_type = ${CardType.MEMBER}
+    `))[0];
+    const { balance } = await this.dataSource.createQueryBuilder().select('sum(balance)', 'balance').from(Consumer, 'consumers').where('consumers.card_type != :type', {type: CardType.GUEST}).getRawOne();
     return {
-      consumerBalance,
-      consumptionCount,
-      consumptionAmount,
-      rechargeCount,
-      rechangeAmount,
-    };
+      guestConsumption,
+      memberConsumption,
+      memberRechange,
+      balance
+    }
+  }
+
+  async getTodayStatistic() {
+    const today = dayjs().format('YYYY-MM-DD')
+    const { guestConsumption, memberConsumption } = (await this.dataSource.query(`
+      select 
+        sum(case when card_type = ${CardType.GUEST} then cr.amount else 0 end) guestConsumption,
+        sum(case when card_type = ${CardType.MEMBER} then cr.amount else 0 end) memberConsumption
+      from consumption_record cr
+      left join consumers c on c.id = cr.consumer_id
+      where cr.create_time between '${today + ' 00:00:00'}' and '${today + ' 23:59:59'}'
+    `))[0];
+    const { memberRechange } = (await this.dataSource.query(`
+      select 
+        sum(rr.amount) memberRechange
+      from recharge_record rr
+      left join consumers c on c.id = rr.consumer_id
+      where c.card_type = ${CardType.MEMBER} and rr.create_time between '${today + ' 00:00:00'}' and '${today + ' 23:59:59'}'
+    `))[0];
+    return {
+      guestConsumption: guestConsumption || 0,
+      memberConsumption: memberConsumption || 0,
+      memberRechange: memberRechange || 0
+    }
   }
 
   async dailyConsumption() {
     return await this.dataSource.query(`
       select
-        sum(amount) sum,
-        count(1) count,
-        date_format(create_time, '%Y-%m-%d') date
-      from consumption_record
+        date_format(cr.create_time, '%Y-%m-%d') date,
+        sum(case when c.card_type = ${CardType.GUEST} then cr.amount else 0 end) guestConsumption,
+        sum(case when c.card_type = ${CardType.MEMBER} then cr.amount else 0 end) memberConsumption
+      from consumption_record cr
+      left join consumers c on c.id = cr.consumer_id
       group by date
       order by date ASC
     `);
@@ -45,28 +75,19 @@ export class StatisticService {
   async dailyRecharge() {
     return await this.dataSource.query(`
       select
-        sum(amount) sum,
-        count(1) count,
-        date_format(create_time, '%Y-%m-%d') date
-      from recharge_record
-      where remark != '余额充值'
+        sum(rr.amount) amount,
+        date_format(rr.create_time, '%Y-%m-%d') date
+      from recharge_record rr
+      left join consumers c on c.id = rr.consumer_id
+      where c.card_type = ${CardType.MEMBER} and rr.remark != '余额充值'
       group by date
       order by date ASC
     `);
   }
 
   async consumptionCategory(dto: StatisticDto) {
-    // return await this.dataSource.query(`
-    //   select
-    //     date_format( create_time, '%Y-%m-%d' ) date,
-    //     sum(case when consumption_type = 1 then 1 else 0 end) hairCare,
-    //     sum(case when consumption_type = 2 then 1 else 0 end) hairDye,
-    //     sum(case when consumption_type = 9 then 1 else 0 end) other
-    //   from
-    //     consumption_record
-    //   group by date
-    // `);
-    const { startTime='', endTime=dayjs().format('YYYY-MM-DD HH:mm:ss') } = dto;
+    const { startTime = '', endTime = dayjs().format('YYYY-MM-DD HH:mm:ss') } =
+      dto;
     const result = await this.dataSource.query(`
       select
         count(*) value,

@@ -45,7 +45,7 @@ function initChart() {
     const barChart = init(document.getElementById(props.id) as HTMLDivElement);
     barChart.setOption({
       title: {
-        show: true,
+        show: false,
         text: '消费总览',
         x: 'center',
         padding: 15,
@@ -56,6 +56,7 @@ function initChart() {
           color: '#337ecc',
         },
       },
+      legend: {},
       grid: {
         left: '2%',
         right: '2%',
@@ -92,14 +93,26 @@ function initChart() {
       ],
       series: [
         {
+          name: '会员消费',
           type: 'bar',
-          data: data.map(item => item.sum),
-          barWidth: 20,
+          data: data.map(item => item.memberConsumption),
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#83bff6' },
               { offset: 0.5, color: '#188df0' },
               { offset: 1, color: '#188df0' },
+            ]),
+          },
+        },
+        {
+          name: '散客消费',
+          type: 'bar',
+          data: data.map(item => item.guestConsumption),
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#25d73c' },
+              { offset: 0.5, color: '#1bc23d' },
+              { offset: 1, color: '#179e61' },
             ]),
           },
         },
