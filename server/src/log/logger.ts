@@ -1,7 +1,7 @@
 import { ConsoleLogger } from '@nestjs/common';
 import { error, info } from './log4js';
 
-export class Logger extends ConsoleLogger {
+class Logger extends ConsoleLogger {
   /**
    * Write a 'log' level log.
    */
@@ -39,3 +39,5 @@ export class Logger extends ConsoleLogger {
     super.verbose(message, context);
   }
 }
+
+export default new Logger();

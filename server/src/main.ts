@@ -13,11 +13,11 @@ import * as path from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/filter/http-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
-import { Logger } from './log/logger';
+import logger from './log/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: new Logger(),
+    logger,
   });
   // https://blog.csdn.net/weixin_38007986/article/details/126910312
   app.useStaticAssets(path.join(__dirname, '..', 'public'));

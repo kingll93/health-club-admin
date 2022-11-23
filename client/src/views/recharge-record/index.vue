@@ -6,10 +6,10 @@ export default {
 
 <script setup lang="ts">
 import { onMounted, reactive, toRefs, ref } from 'vue';
-import { ElForm } from 'element-plus';
+import { ElForm, ElMessageBox, ElMessage } from 'element-plus';
 import { RechargeRecord, RechargeRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
-import { getRechargeRecordList } from '@/api/recharge-record';
+import { getRechargeRecordList, deleteRechargeRecord } from '@/api/recharge-record';
 import { printRecharge } from '@/utils/print';
 
 // 属性名必须和元素的ref属性值一致
@@ -59,6 +59,22 @@ function handlePrint(row: RechargeRecord) {
   })
 }
 
+function handleDelete(row: RechargeRecord) {
+  ElMessageBox.confirm('您正在执行删除订单操作，删除后，将无法恢复数据。确认要删除吗？', '提示', {
+    type: 'warning'
+  })
+    .then(() => {
+      deleteRechargeRecord(row.id).then(() => {
+        ElMessage({
+          type: 'success',
+          message: '操作成功'
+        });
+        handleQuery();
+      });
+    })
+    .catch(() => { });
+}
+
 onMounted(() => {
   handleQuery();
 });
@@ -98,6 +114,7 @@ onMounted(() => {
       <el-table-column label="操作">
         <template #default="scope">
           <el-button text type="primary" @click="handlePrint(scope.row)">打印</el-button>
+          <el-button text type="primary" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

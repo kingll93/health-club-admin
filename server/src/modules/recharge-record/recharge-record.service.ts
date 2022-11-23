@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -15,6 +16,7 @@ import { UpdateRechargeRecordDto } from './dto/update-recharge-record.dto';
 import { FindRechargeRecordDto } from './dto/find-recharge-record.dto';
 import { RechargeRecordRo } from './dto/recharge-record-info.dto';
 import { BalanceType } from 'src/core/enums/common.enum';
+import logger from 'src/log/logger';
 
 @Injectable()
 export class RechargeRecordService {
@@ -120,7 +122,36 @@ export class RechargeRecordService {
     return `This action updates a #${id} rechargeRecord`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} rechargeRecord`;
+  async remove(id: number) {
+    const record = await this.rechargeRecordRepository.findOneBy({id});
+    if (!record) {
+      throw new NotFoundException(`id为${id}的充值订单不存在`);
+    }
+    if (dayjs(record.createTime).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD')) {
+      throw new BadRequestException('只能删除当天的订单')
+    }
+
+    const balanceRecord = await this.dataSource.getRepository(Balance).findOneBy({orderNum: record.orderNum});
+    const consumer = await this.consumerService.findOne(record.consumerId);
+    consumer.balance -= record.amount;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let result = null;
+    try {
+      await queryRunner.manager.remove(balanceRecord);
+      await queryRunner.manager.save(consumer);
+      result = await queryRunner.manager.remove(record);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      logger.error(err);
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
+    return result;
   }
 }
