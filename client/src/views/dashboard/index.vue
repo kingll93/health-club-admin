@@ -9,7 +9,6 @@ import { onMounted, reactive, toRefs, ref } from 'vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import ConsumptionChart from './components/ConsumptionChart.vue';
 import RechargeChart from './components/RechargeChart.vue';
-// import CategoryPie from './components/CategoryPie.vue';
 import { getStatistic } from '@/api/dashboard';
 import { Statistic } from '@/types';
 
@@ -90,9 +89,6 @@ onMounted(() => {
                 <RechargeChart id="rechargeChart" height="400px" width="100%" class="chart-container" />
             </el-col>
         </el-row>
-        <!-- <el-row :gutter="40">
-            <CategoryPie id="categoryPie" height="400px" width="100%" class="chart-container" />
-        </el-row> -->
     </div>
 </template>
 
