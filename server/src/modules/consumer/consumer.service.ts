@@ -14,6 +14,7 @@ import { Consumer } from './entities/consumer.entity';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { UpdateConsumerDto } from './dto/update-consumer.dto';
 import { FindConsumerDto } from './dto/find-consumer.dto';
+import { IsDeleted } from 'src/core/enums/common.enum';
 
 
 @Injectable()
@@ -49,6 +50,7 @@ export class ConsumerService {
       ...!!name ? { name: Like(`%${name}%`) } : null,
       ...!!phone? { phone: Like(`%${phone}%`) } : null,
       ...!!gender ? { gender } : null,
+      isDeleted: IsDeleted.NO,
       ...{ createTime: Between(startTime, endTime) },
     }
     const consumers = await this.consumerRepository.findAndCount({ where, order: { cardNum: 'DESC' }, skip: pageSize * (page - 1), take: pageSize })
@@ -83,6 +85,7 @@ export class ConsumerService {
     if (!exist) {
       throw new NotFoundException(`id为${id}的客户不存在`);
     }
-    return await this.consumerRepository.remove(exist);
+    exist.isDeleted = IsDeleted.YES;
+    return await this.consumerRepository.save(exist);
   }
 }

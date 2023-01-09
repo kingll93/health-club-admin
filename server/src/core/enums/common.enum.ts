@@ -26,6 +26,13 @@ export enum StatusValue {
   ENABLED = 1,
 }
 
+export enum IsDeleted {
+  /** 未删除 */
+  NO = 0,
+  /** 已删除 */
+  YES = 1,
+}
+
 export enum ConsumptionType {
   /** 养发 */
   HAIR_CARE = 1,

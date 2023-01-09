@@ -18,6 +18,7 @@ import {
   BalanceType,
   ConsumptionType,
   HairType,
+  IsDeleted,
 } from 'src/core/enums/common.enum';
 import logger from 'src/log/logger';
 
@@ -112,7 +113,7 @@ export class ConsumptionRecordService {
       left join consumers c on cr.consumer_id = c.id
       left join user u on cr.create_by = u.id
       left join balance b on cr.order_num = b.order_num
-      where c.name like '%${consumerName || ''}%' and u.name like '%${
+      where cr.is_deleted=${IsDeleted.NO} and c.is_deleted=${IsDeleted.NO} and c.name like '%${consumerName || ''}%' and u.name like '%${
       userName || ''
     }%' and cr.create_time between '${startTime}' and '${endTime}'
       order by cr.create_time DESC
@@ -136,11 +137,16 @@ export class ConsumptionRecordService {
     if (!record) {
       throw new NotFoundException(`id为${id}的消费订单不存在`);
     }
+    
     if (dayjs(record.createTime).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD')) {
       throw new BadRequestException('只能删除当天的订单')
     }
 
     const balanceRecord = await this.dataSource.getRepository(Balance).findOneBy({orderNum: record.orderNum});
+
+    record.isDeleted = IsDeleted.YES;
+    balanceRecord.isDeleted = IsDeleted.YES;
+
     const consumer = await this.consumerService.findOne(record.consumerId);
     consumer.balance += record.amount;
 
@@ -149,9 +155,9 @@ export class ConsumptionRecordService {
     await queryRunner.startTransaction();
     let result = null;
     try {
-      await queryRunner.manager.remove(balanceRecord);
+      await queryRunner.manager.save(balanceRecord);
       await queryRunner.manager.save(consumer);
-      result = await queryRunner.manager.remove(record);
+      result = await queryRunner.manager.save(record);
 
       await queryRunner.commitTransaction();
     } catch (err) {

@@ -13,7 +13,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import * as dayjs from 'dayjs';
-import { Gender, CardType } from 'src/core/enums/common.enum';
+import { Gender, CardType, IsDeleted } from 'src/core/enums/common.enum';
 
 @Entity('consumers')
 export class Consumer {
@@ -37,6 +37,9 @@ export class Consumer {
 
   @Column({ type: 'tinyint', name: 'card_type', default: CardType.MEMBER })
   cardType: CardType;
+
+  @Column({ type: 'tinyint', name: 'is_deleted', default: IsDeleted.NO })
+  isDeleted: IsDeleted;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
   createTime: string;

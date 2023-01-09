@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
-import { ConsumptionType, HairType } from 'src/core/enums/common.enum';
+import { ConsumptionType, HairType, IsDeleted } from 'src/core/enums/common.enum';
 
 
 @Entity('consumption_record')
@@ -34,6 +34,9 @@ export class ConsumptionRecord {
 
     @Column({name: 'create_by'})
     createBy: number;
+
+    @Column({ type: 'tinyint', name: 'is_deleted', default: IsDeleted.NO })
+    isDeleted: IsDeleted;
 
     @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
     createTime: Date;

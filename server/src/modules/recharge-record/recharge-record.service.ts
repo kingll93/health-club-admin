@@ -15,7 +15,7 @@ import { CreateRechargeRecordDto } from './dto/create-recharge-record.dto';
 import { UpdateRechargeRecordDto } from './dto/update-recharge-record.dto';
 import { FindRechargeRecordDto } from './dto/find-recharge-record.dto';
 import { RechargeRecordRo } from './dto/recharge-record-info.dto';
-import { BalanceType } from 'src/core/enums/common.enum';
+import { BalanceType, IsDeleted } from 'src/core/enums/common.enum';
 import logger from 'src/log/logger';
 
 @Injectable()
@@ -106,7 +106,7 @@ export class RechargeRecordService {
       left join consumers as c on rr.consumer_id = c.id
       left join user as u on rr.create_by = u.id
       left join balance b on rr.order_num = b.order_num
-      where c.name like '%${consumerName || ''}%' and u.name like '%${
+      where rr.is_deleted=${IsDeleted.NO} and c.is_deleted=${IsDeleted.NO} and c.name like '%${consumerName || ''}%' and u.name like '%${
       userName || ''
     }%' and rr.create_time between '${startTime}' and '${endTime}'
       order by rr.create_time DESC
@@ -132,6 +132,10 @@ export class RechargeRecordService {
     }
 
     const balanceRecord = await this.dataSource.getRepository(Balance).findOneBy({orderNum: record.orderNum});
+
+    record.isDeleted = IsDeleted.YES;
+    balanceRecord.isDeleted = IsDeleted.YES;
+
     const consumer = await this.consumerService.findOne(record.consumerId);
     consumer.balance -= record.amount;
 
@@ -140,9 +144,9 @@ export class RechargeRecordService {
     await queryRunner.startTransaction();
     let result = null;
     try {
-      await queryRunner.manager.remove(balanceRecord);
+      await queryRunner.manager.save(balanceRecord);
       await queryRunner.manager.save(consumer);
-      result = await queryRunner.manager.remove(record);
+      result = await queryRunner.manager.save(record);
 
       await queryRunner.commitTransaction();
     } catch (err) {
