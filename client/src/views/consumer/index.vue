@@ -2,6 +2,7 @@
 export const ConsumptionTypeMap = {
   [ConsumptionType.HAIR_CARE]: '养发',
   [ConsumptionType.HAIR_DYE]: '染发',
+  [ConsumptionType.OTHER]: '其他'
 }
 
 export const HairTypeMap = {
@@ -26,6 +27,7 @@ import { recharge } from '@/api/recharge-record';
 import { consumption } from '@/api/consumption-record';
 import router from '@/router';
 import { ConsumptionType, Gender, HairType } from '@/utils/enums';
+import useStore from '@/store';
 
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
@@ -34,6 +36,8 @@ const consumptionFormRef = ref(ElForm);
 
 const RECHARGE = '充值';
 const CONSUMPTION = '消费';
+
+const { app } = useStore();
 
 const state = reactive({
   loading: false,
@@ -100,7 +104,7 @@ function handleDelete(row: Consumer) {
       deleteConsumer(row.id).then(() => {
         ElMessage({
           type: 'success',
-          message: '充值成功'
+          message: '操作成功'
         });
         handleQuery();
       });
@@ -123,10 +127,11 @@ function handleRechargeConfirm() {
       recharge(state.rechargeForm).then(res => {
         ElMessage({
           type: 'success',
-          message: '操作成功'
+          message: '充值成功'
         });
         handleCloseDialog();
         handleQuery();
+        app.getTodayStatistic();
       })
     }
   })
@@ -152,6 +157,7 @@ function handleConsumptionConfirm(row: Consumer) {
         });
         handleCloseDialog();
         handleQuery();
+        app.getTodayStatistic();
       })
     }
   })
@@ -181,7 +187,7 @@ function getPrice() {
       [HairType.EXTRA_LONG]: 350
     }
   }
-  state.consumptionForm.amount = price[state.consumptionForm.consumptionType][state.consumptionForm.hairType]
+  state.consumptionForm.amount = state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType!]
 }
 
 
@@ -287,7 +293,7 @@ onMounted(() => {
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="hairType" label="头发类型:">
+        <el-form-item v-if="consumptionForm.consumptionType !== ConsumptionType.OTHER" prop="hairType" label="头发类型:">
           <el-select v-model="consumptionForm.hairType" @change="getPrice">
             <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)">
             </el-option>

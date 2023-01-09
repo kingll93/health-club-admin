@@ -6,10 +6,10 @@ export default {
 
 <script setup lang="ts">
 import { onMounted, reactive, toRefs, ref } from 'vue';
-import { ElForm } from 'element-plus';
+import { ElForm, ElMessageBox, ElMessage } from 'element-plus';
 import { ConsumptionRecord, ConsumptionRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
-import { getConsumptionRecordList } from '@/api/consumption-record';
+import { getConsumptionRecordList, deleteConsumptionRecord } from '@/api/consumption-record';
 import { ConsumptionTypeMap, HairTypeMap } from '../consumer/index.vue';
 import { ConsumptionType, HairType } from '@/utils/enums';
 import { printConsumption } from '@/utils/print';
@@ -63,6 +63,22 @@ function handlePrint(row: ConsumptionRecord) {
   })
 }
 
+function handleDelete(row: ConsumptionRecord) {
+  ElMessageBox.confirm('您正在执行删除订单操作，删除后，将无法恢复数据。确认要删除吗？', '提示', {
+    type: 'warning'
+  })
+    .then(() => {
+      deleteConsumptionRecord(row.id).then(() => {
+        ElMessage({
+          type: 'success',
+          message: '操作成功'
+        });
+        handleQuery();
+      });
+    })
+    .catch(() => { });
+}
+
 onMounted(() => {
   handleQuery();
 });
@@ -101,7 +117,7 @@ onMounted(() => {
       </el-table-column>
       <el-table-column prop="hairType" label="头发类型">
         <template #default="scope">
-          <span>{{ HairTypeMap[scope.row.hairType as HairType] }}</span>
+          <span>{{ scope.row.hairType ? HairTypeMap[scope.row.hairType as HairType] : '-' }}</span>
         </template>
       </el-table-column>>
       <el-table-column prop="amount" label="消费金额" />
@@ -112,6 +128,7 @@ onMounted(() => {
       <el-table-column label="操作">
         <template #default="scope">
           <el-button text type="primary" @click="handlePrint(scope.row)">打印</el-button>
+          <el-button text type="primary" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

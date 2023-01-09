@@ -5,6 +5,13 @@ export enum Gender {
   MALEL = 1,
 }
 
+export enum CardType {
+  /** 散客 */
+  GUEST = 0,
+  /** 会员 */
+  MEMBER = 1,
+}
+
 export enum UserType {
   /** 管理员 */
   ADMIN = 0,
@@ -19,11 +26,20 @@ export enum StatusValue {
   ENABLED = 1,
 }
 
+export enum IsDeleted {
+  /** 未删除 */
+  NO = 0,
+  /** 已删除 */
+  YES = 1,
+}
+
 export enum ConsumptionType {
   /** 养发 */
   HAIR_CARE = 1,
   /** 染发 */
   HAIR_DYE = 2,
+  /** 其他 */
+  OTHER = 9,
 }
 
 export enum HairType {

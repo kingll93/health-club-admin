@@ -6,7 +6,7 @@
  * @Description: 
  */
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
-import { BalanceType } from "src/core/enums/common.enum";
+import { BalanceType, IsDeleted } from "src/core/enums/common.enum";
 
 
 @Entity('balance')
@@ -25,6 +25,9 @@ export class Balance {
   
     @Column({ type: 'double' })
     balance: number;
+
+    @Column({ type: 'tinyint', name: 'is_deleted', default: IsDeleted.NO })
+    isDeleted: IsDeleted;
   
     @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
     createTime: string;

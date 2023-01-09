@@ -36,8 +36,8 @@ export class ConsumptionRecordController {
   //   return this.consumptionRecordService.update(+id, updateConsumptionRecordDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.consumptionRecordService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.consumptionRecordService.remove(+id);
+  }
 }

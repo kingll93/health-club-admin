@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
 } from 'typeorm';
+import { IsDeleted } from 'src/core/enums/common.enum';
 
 @Entity('recharge_record')
 export class RechargeRecord {
@@ -34,4 +35,7 @@ export class RechargeRecord {
 
   @Column({ name: 'create_by' })
   createBy: number;
+
+  @Column({ type: 'tinyint', name: 'is_deleted', default: IsDeleted.NO })
+  isDeleted: IsDeleted;
 }

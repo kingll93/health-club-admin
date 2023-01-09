@@ -17,3 +17,10 @@ export function getRechargeRecordList(data: RechargeRecordQueryParam): AxiosProm
     params: data
   });
 }
+
+export function deleteRechargeRecord(id: number) {
+  return request({
+    url: `/recharge-record/${id}`,
+    method: 'delete'
+  });
+}

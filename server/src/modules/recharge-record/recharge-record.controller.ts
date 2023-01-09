@@ -38,8 +38,8 @@ export class RechargeRecordController {
   //   return this.rechargeRecordService.update(+id, updateRechargeRecordDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.rechargeRecordService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.rechargeRecordService.remove(+id);
+  }
 }

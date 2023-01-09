@@ -17,3 +17,11 @@ export function getConsumptionRecordList(data: ConsumptionRecordQueryParam): Axi
     params: data
   });
 }
+
+
+export function deleteConsumptionRecord(id: number) {
+  return request({
+    url: `/consumption-record/${id}`,
+    method: 'delete'
+  });
+}

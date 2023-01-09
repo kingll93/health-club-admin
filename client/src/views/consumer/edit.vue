@@ -106,10 +106,6 @@ onMounted(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item prop="balance" :label="formData.id ? '余额:' : '开卡金额:'">
-                <el-input :disabled="formData.id" v-model.number="formData.balance" placeholder="请输入开卡金额" />
-            </el-form-item>
-
             <el-form-item>
                 <el-button type="primary" @click="handleSubmit">确定</el-button>
                 <el-button @click="handleCancel">返回</el-button>

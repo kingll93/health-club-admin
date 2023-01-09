@@ -14,8 +14,13 @@ import { ConsumerService } from 'src/modules/consumer/consumer.service';
 import { CreateConsumptionRecordDto } from './dto/create-consumption-record.dto';
 import { UpdateConsumptionRecordDto } from './dto/update-consumption-record.dto';
 import { FindConsumptionRecordDto } from './dto/find-consumption-record.dto';
-import { BalanceType } from 'src/core/enums/common.enum';
-
+import {
+  BalanceType,
+  ConsumptionType,
+  HairType,
+  IsDeleted,
+} from 'src/core/enums/common.enum';
+import logger from 'src/log/logger';
 
 @Injectable()
 export class ConsumptionRecordService {
@@ -39,6 +44,9 @@ export class ConsumptionRecordService {
       throw new BadRequestException('客户余额不足');
     }
     consumer.balance = consumer.balance - amount;
+    if (dto.consumptionType == ConsumptionType.OTHER) {
+      delete dto.hairType;
+    }
 
     const consumptionRecord = this.consumptionRecordRepository.create({
       orderNum,
@@ -63,7 +71,7 @@ export class ConsumptionRecordService {
 
       await queryRunner.commitTransaction();
     } catch (err) {
-      console.log(err);
+      logger.error(err);
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException();
     } finally {
@@ -80,20 +88,14 @@ export class ConsumptionRecordService {
       startTime = '',
       endTime = dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
     } = dto;
-    const total = Number(
-      (
-        await this.dataSource.query(`
+    const total = Number((await this.dataSource.query(`
       select
         count(*) count
       from consumption_record cr
       left join consumers c on cr.consumer_id = c.id
       left join user u on cr.create_by = u.id
-      where c.name like '%${consumerName || ''}%' and u.name like '%${
-          userName || ''
-        }%' and cr.create_time between '${startTime}' and '${endTime}'
-    `)
-      )[0].count,
-    );
+      where c.name like '%${consumerName || ''}%' and u.name like '%${userName || ''}%' and cr.create_time between '${startTime}' and '${endTime}'
+    `))[0].count);
 
     const list = await this.dataSource.query(`
       select 
@@ -111,7 +113,7 @@ export class ConsumptionRecordService {
       left join consumers c on cr.consumer_id = c.id
       left join user u on cr.create_by = u.id
       left join balance b on cr.order_num = b.order_num
-      where c.name like '%${consumerName || ''}%' and u.name like '%${
+      where cr.is_deleted=${IsDeleted.NO} and c.is_deleted=${IsDeleted.NO} and c.name like '%${consumerName || ''}%' and u.name like '%${
       userName || ''
     }%' and cr.create_time between '${startTime}' and '${endTime}'
       order by cr.create_time DESC
@@ -130,7 +132,41 @@ export class ConsumptionRecordService {
   //   return `This action updates a #${id} consumptionRecord`;
   // }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} consumptionRecord`;
-  // }
+  async remove(id: number) {
+    const record = await this.consumptionRecordRepository.findOneBy({id});
+    if (!record) {
+      throw new NotFoundException(`id为${id}的消费订单不存在`);
+    }
+    
+    if (dayjs(record.createTime).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD')) {
+      throw new BadRequestException('只能删除当天的订单')
+    }
+
+    const balanceRecord = await this.dataSource.getRepository(Balance).findOneBy({orderNum: record.orderNum});
+
+    record.isDeleted = IsDeleted.YES;
+    balanceRecord.isDeleted = IsDeleted.YES;
+
+    const consumer = await this.consumerService.findOne(record.consumerId);
+    consumer.balance += record.amount;
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    let result = null;
+    try {
+      await queryRunner.manager.save(balanceRecord);
+      await queryRunner.manager.save(consumer);
+      result = await queryRunner.manager.save(record);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      logger.error(err);
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
+    return result;
+  }
 }
