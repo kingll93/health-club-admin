@@ -19,7 +19,7 @@ export enum UserType {
   USER = 1,
 }
 
-export enum StatusValue {
+export enum UserStatus {
   /** 禁用 */
   DISABLED = 0,
   /** 正常使用 */

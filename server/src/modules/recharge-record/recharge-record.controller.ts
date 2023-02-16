@@ -4,7 +4,6 @@ import { RechargeRecordService } from './recharge-record.service';
 import { CreateRechargeRecordDto } from './dto/create-recharge-record.dto';
 import { UpdateRechargeRecordDto } from './dto/update-recharge-record.dto';
 import { FindRechargeRecordDto } from './dto/find-recharge-record.dto';
-import { RechargeRecordRo } from './dto/recharge-record-info.dto';
 
 
 @ApiTags('充值记录')
@@ -22,7 +21,7 @@ export class RechargeRecordController {
   @ApiOperation({ summary: '充值记录列表' })
   @ApiBearerAuth()
   @Get()
-  findAll(@Query() dto: FindRechargeRecordDto): Promise<RechargeRecordRo> {
+  findAll(@Query() dto: FindRechargeRecordDto) {
     return this.rechargeRecordService.findAll(dto);
   }
 

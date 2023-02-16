@@ -11,6 +11,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
 } from 'typeorm';
+import * as dayjs from 'dayjs';
+import { Transform } from 'class-transformer';
 import { IsDeleted } from 'src/core/enums/common.enum';
 
 @Entity('recharge_record')
@@ -28,7 +30,11 @@ export class RechargeRecord {
   remark: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
-  createTime: Date;
+  @Transform(params => {
+    console.log(params.value)
+    return dayjs(params.value).format('YYYY-MM-DD HH:mm:ss')
+  }, { toPlainOnly: true })
+  createTime: string;
 
   @Column({ name: 'consumer_id' })
   consumerId: number;

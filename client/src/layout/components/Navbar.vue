@@ -24,9 +24,9 @@
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <!-- <router-link to="/">
-              <el-dropdown-item>账号设置</el-dropdown-item>
-            </router-link> -->
+            <el-dropdown-item v-if="user?.info?.role === UserType.ADMIN" divided @click="handleCreateUser">
+              创建用户
+            </el-dropdown-item>
             <el-dropdown-item divided @click="handleChangePassword">
               修改密码
             </el-dropdown-item>
@@ -37,23 +37,29 @@
         </template>
       </el-dropdown>
     </div>
+
+    <register ref="registerComp"></register>
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { changePassword } from '@/api/login';
 import useStore from '@/store';
+import { UserType } from '@/utils/enums';
 
 // 组件依赖
 import Hamburger from '@/components/Hamburger/index.vue';
 import Breadcrumb from '@/components/Breadcrumb/index.vue';
 import Screenfull from '@/components/Screenfull/index.vue';
 import SizeSelect from '@/components/SizeSelect/index.vue';
+import Register from './Register.vue';
 
 // 图标依赖
 import { CaretBottom } from '@element-plus/icons-vue';
+
+const registerComp = ref<InstanceType<typeof Register> | null>(null);
 
 const { app, user } = useStore();
 
@@ -80,6 +86,10 @@ function logout() {
         router.push(`/login?redirect=${route.fullPath}`);
       });
   });
+}
+
+function handleCreateUser() {
+  registerComp.value?.show();
 }
 
 function handleChangePassword() {
@@ -111,7 +121,8 @@ function handleChangePassword() {
 
 onMounted(() => {
   app.getTodayStatistic();
-})
+  user.getUserInfo();
+});
 </script>
   
 <style lang="scss" scoped>
@@ -122,18 +133,17 @@ ul {
 }
 
 .navbar {
+  display: flex;
   height: 50px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   border-bottom: 1px solid #d8dce5;
-  text-align: center;
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
-    float: left;
     cursor: pointer;
     transition: background 0.3s;
     -webkit-tap-highlight-color: transparent;
@@ -144,18 +154,18 @@ ul {
   }
 
   .breadcrumb-container {
-    float: left;
   }
 
   .today-datas {
     height: 100%;
-    display: inline-flex;
+    flex: 1;
+    display: flex;
+    justify-content: center;
     align-items: center;
     color: var(--el-color-primary);
   }
 
   .right-menu {
-    float: right;
     height: 100%;
     line-height: 50px;
 

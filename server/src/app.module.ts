@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, ClassSerializerInterceptor } from '@nestjs/common';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import envConfig from '../config/env';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -33,6 +33,7 @@ import { StatisticModule } from './modules/statistic/statistic.module';
         timezone: '+08:00', //服务器上配置的时区
         autoLoadEntities: true, // 自动加载Entities
         synchronize: configService.get('DB_SYNCHRONIZE'), //根据实体自动创建数据库表
+        // dateStrings: true
       }),
     }),
     ConsumerModule,
@@ -49,7 +50,11 @@ import { StatisticModule } from './modules/statistic/statistic.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule {}

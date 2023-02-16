@@ -1,3 +1,5 @@
+import { UserType, UserStatus } from '@/utils/enums';
+
 /**
  * 登录表单类型声明
  */
@@ -19,6 +21,8 @@ export interface LoginResponseData {
  export interface UserData {
   account: string;
   name: string;
+  role: UserType;
+  status: UserStatus;
 }
 
 /**
@@ -26,6 +30,15 @@ export interface LoginResponseData {
  */
  export interface ChangePasswordParam {
   password: string
+}
+
+/**
+ * 创建用户参数类型声明
+ */
+export interface RegisterFormData {
+  account: string;
+  name: string;
+  password: string;
 }
 
 

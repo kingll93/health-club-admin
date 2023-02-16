@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { StatisticDto } from './dto/statistic.dto';
 import * as dayjs from 'dayjs';
-import { CardType } from 'src/core/enums/common.enum';
+import { CardType, IsDeleted } from 'src/core/enums/common.enum';
 import { Consumer } from '../consumer/entities/consumer.entity';
 
 @Injectable()
@@ -18,15 +18,20 @@ export class StatisticService {
         sum(case when card_type = ${CardType.MEMBER} then cr.amount else 0 end) memberConsumption
       from consumption_record cr
       left join consumers c on c.id = cr.consumer_id
+      where cr.is_deleted = ${IsDeleted.NO}
     `))[0];
     const { memberRechange } = (await this.dataSource.query(`
       select 
         sum(rr.amount) memberRechange
       from recharge_record rr
       left join consumers c on c.id = rr.consumer_id
-      where c.card_type = ${CardType.MEMBER}
+      where c.card_type = ${CardType.MEMBER} and rr.is_deleted = ${IsDeleted.NO}
     `))[0];
-    const { balance } = await this.dataSource.createQueryBuilder().select('sum(balance)', 'balance').from(Consumer, 'consumers').where('consumers.card_type != :type', {type: CardType.GUEST}).getRawOne();
+    const { balance } = await this.dataSource.createQueryBuilder()
+    .select('sum(balance)', 'balance')
+    .from(Consumer, 'consumers')
+    .where('consumers.card_type != :type', {type: CardType.GUEST}).andWhere('consumers.is_deleted = :isDeleted', {isDeleted: IsDeleted.NO})
+    .getRawOne();
     return {
       guestConsumption,
       memberConsumption,

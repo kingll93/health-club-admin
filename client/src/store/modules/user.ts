@@ -7,10 +7,10 @@ const useUserStore = defineStore({
   id: 'user',
   state: (): UserState => ({
     token: localStorage.get('accessToken') || '',
-    info: undefined
+    info: null
   }),
   getters: {
-    userInfo: state => JSON.parse(decodeURIComponent(escape(window.atob(state.token.split('.')[1]))))
+    // userInfo: state => JSON.parse(decodeURIComponent(escape(window.atob(state.token.split('.')[1]))))
   },
   actions: {
     async RESET_STATE() {
@@ -48,7 +48,6 @@ const useUserStore = defineStore({
     getUserInfo() {
       return new Promise((resolve, reject) => {
         getUser().then(response => {
-          console.log(response.data)
           this.info = response.data;
           resolve(response.data)
         })

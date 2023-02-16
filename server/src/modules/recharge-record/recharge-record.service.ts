@@ -2,7 +2,7 @@ import {
   Injectable,
   NotFoundException,
   InternalServerErrorException,
-  BadRequestException
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -11,10 +11,10 @@ import { ConsumerService } from '../consumer/consumer.service';
 import { RechargeRecord } from './entities/recharge-record.entity';
 import { User } from '../user/entities/user.entity';
 import { Balance } from '../balance/entities/balance.entity';
+import { Consumer } from '../consumer/entities/consumer.entity';
 import { CreateRechargeRecordDto } from './dto/create-recharge-record.dto';
 import { UpdateRechargeRecordDto } from './dto/update-recharge-record.dto';
 import { FindRechargeRecordDto } from './dto/find-recharge-record.dto';
-import { RechargeRecordRo } from './dto/recharge-record-info.dto';
 import { BalanceType, IsDeleted } from 'src/core/enums/common.enum';
 import logger from 'src/log/logger';
 
@@ -40,7 +40,7 @@ export class RechargeRecordService {
     const rechargeRecord = this.rechargeRecordRepository.create({
       orderNum,
       createBy: user.id,
-      ...createRechargeRecordDto
+      ...createRechargeRecordDto,
     });
 
     const balance = this.dataSource.getRepository(Balance).create({
@@ -68,52 +68,43 @@ export class RechargeRecordService {
     }
   }
 
-  async findAll(dto: FindRechargeRecordDto): Promise<RechargeRecordRo> {
+  async findAll(dto: FindRechargeRecordDto) {
     const {
       page = 1,
       pageSize = 10,
-      userName,
-      consumerName,
+      userName = '',
+      consumerName = '',
       startTime = '',
       endTime = dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
     } = dto;
-    const total = Number(
-      (
-        await this.dataSource.query(`
-      select
-        count(*) count
-      from recharge_record rr
-      left join consumers c on rr.consumer_id = c.id
-      left join user u on rr.create_by = u.id
-      where c.name like '%${consumerName || ''}%' and u.name like '%${
-          userName || ''
-        }%' and rr.create_time between '${startTime}' and '${endTime}'
+    
+    const qb = this.rechargeRecordRepository.createQueryBuilder('rechargeRecord')
+    .leftJoinAndSelect(Consumer, 'consumer', 'consumer.id = rechargeRecord.consumerId')
+    .leftJoinAndSelect(User, 'user', 'user.id = rechargeRecord.createBy')
+    .leftJoinAndSelect(Balance, 'balance', 'balance.orderNum = rechargeRecord.orderNum')
+    .select(`
+      rechargeRecord.id,
+      rechargeRecord.amount,
+      rechargeRecord.remark,
+      rechargeRecord.orderNum as orderNum,
+      DATE_FORMAT(rechargeRecord.createTime,'%Y-%m-%d %H:%i:%s') as createTime,
+      consumer.name as consumerName,
+      user.name as userName,
+      balance.balance
     `)
-      )[0].count,
-    );
+    .where('rechargeRecord.isDeleted = :isDeleted', { isDeleted: IsDeleted.NO})
+    .andWhere('consumer.isDeleted = :isDeleted', { isDeleted: IsDeleted.NO })
+    .andWhere('consumer.name LIKE :consumerName', { consumerName: `%${consumerName}%` })
+    .andWhere('user.name LIKE :userName', { userName: `%${userName}%` })
+    .andWhere('rechargeRecord.createTime Between :startTime and :endTime', { startTime, endTime })
+    .orderBy('rechargeRecord.createTime', 'DESC')
+    .offset(pageSize * (page - 1))
+    .limit(pageSize)
 
-    const list = await this.dataSource.query(`
-      select
-        rr.id,
-        rr.amount,
-        rr.order_num orderNum,
-        rr.remark,
-        date_format(rr.create_time,'%Y-%m-%d %H:%i:%s') as createTime,
-        c.name as consumerName,
-        u.name as userName,
-        b.balance
-      from recharge_record as rr
-      left join consumers as c on rr.consumer_id = c.id
-      left join user as u on rr.create_by = u.id
-      left join balance b on rr.order_num = b.order_num
-      where rr.is_deleted=${IsDeleted.NO} and c.is_deleted=${IsDeleted.NO} and c.name like '%${consumerName || ''}%' and u.name like '%${
-      userName || ''
-    }%' and rr.create_time between '${startTime}' and '${endTime}'
-      order by rr.create_time DESC
-      limit ${pageSize}
-      offset ${pageSize * (page - 1)}
-    `);
-    return { list, total };
+    return { 
+      list: await qb.getRawMany(),
+      total: await qb.getCount()
+    };
   }
 
   async findOne(id: number) {}
@@ -123,15 +114,20 @@ export class RechargeRecordService {
   }
 
   async remove(id: number) {
-    const record = await this.rechargeRecordRepository.findOneBy({id});
+    const record = await this.rechargeRecordRepository.findOneBy({ id });
     if (!record) {
       throw new NotFoundException(`id为${id}的充值订单不存在`);
     }
-    if (dayjs(record.createTime).format('YYYY-MM-DD') !== dayjs().format('YYYY-MM-DD')) {
-      throw new BadRequestException('只能删除当天的订单')
+    if (
+      dayjs(record.createTime).format('YYYY-MM-DD') !==
+      dayjs().format('YYYY-MM-DD')
+    ) {
+      throw new BadRequestException('只能删除当天的订单');
     }
 
-    const balanceRecord = await this.dataSource.getRepository(Balance).findOneBy({orderNum: record.orderNum});
+    const balanceRecord = await this.dataSource
+      .getRepository(Balance)
+      .findOneBy({ orderNum: record.orderNum });
 
     record.isDeleted = IsDeleted.YES;
     balanceRecord.isDeleted = IsDeleted.YES;

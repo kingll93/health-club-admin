@@ -8,7 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Like } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { ConsumptionRecord } from './entities/consumption-record.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { Consumer } from '../consumer/entities/consumer.entity';
+import { User } from '../user/entities/user.entity';
 import { Balance } from '../balance/entities/balance.entity';
 import { ConsumerService } from 'src/modules/consumer/consumer.service';
 import { CreateConsumptionRecordDto } from './dto/create-consumption-record.dto';
@@ -83,45 +84,41 @@ export class ConsumptionRecordService {
     const {
       page = 1,
       pageSize = 10,
-      consumerName,
-      userName,
+      consumerName = '',
+      userName = '',
       startTime = '',
       endTime = dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
     } = dto;
-    const total = Number((await this.dataSource.query(`
-      select
-        count(*) count
-      from consumption_record cr
-      left join consumers c on cr.consumer_id = c.id
-      left join user u on cr.create_by = u.id
-      where c.name like '%${consumerName || ''}%' and u.name like '%${userName || ''}%' and cr.create_time between '${startTime}' and '${endTime}'
-    `))[0].count);
 
-    const list = await this.dataSource.query(`
-      select 
-        cr.id,
-        cr.order_num orderNum,
-        cr.consumption_type consumptionType,
-        cr.hair_type hairType,
-        cr.amount,
-        cr.remark,
-        date_format(cr.create_time,'%Y-%m-%d %H:%i:%s') as createTime,
-        c.name consumerName,
-        u.name userName,
-        b.balance
-      from consumption_record cr
-      left join consumers c on cr.consumer_id = c.id
-      left join user u on cr.create_by = u.id
-      left join balance b on cr.order_num = b.order_num
-      where cr.is_deleted=${IsDeleted.NO} and c.is_deleted=${IsDeleted.NO} and c.name like '%${consumerName || ''}%' and u.name like '%${
-      userName || ''
-    }%' and cr.create_time between '${startTime}' and '${endTime}'
-      order by cr.create_time DESC
-      limit ${pageSize}
-      offset ${pageSize * (page - 1)}
-    `);
-
-    return { list, total };
+    const qb = this.consumptionRecordRepository.createQueryBuilder('consumptionRecord')
+    .leftJoinAndSelect(Consumer, 'consumer', 'consumer.id = consumptionRecord.consumerId')
+    .leftJoinAndSelect(User, 'user', 'user.id = consumptionRecord.createBy')
+    .leftJoinAndSelect(Balance, 'balance', 'balance.orderNum = consumptionRecord.orderNum')
+    .select(`
+      consumptionRecord.id,
+      consumptionRecord.amount,
+      consumptionRecord.remark,
+      consumptionRecord.consumptionType as consumptionType,
+      consumptionRecord.hairType as hairType,
+      consumptionRecord.orderNum as orderNum,
+      DATE_FORMAT(consumptionRecord.createTime,'%Y-%m-%d %H:%i:%s') as createTime,
+      consumer.name as consumerName,
+      user.name as userName,
+      balance.balance
+    `)
+    .where('consumptionRecord.isDeleted = :isDeleted', { isDeleted: IsDeleted.NO})
+    .andWhere('consumer.isDeleted = :isDeleted', { isDeleted: IsDeleted.NO })
+    .andWhere('consumer.name LIKE :consumerName', { consumerName: `%${consumerName}%` })
+    .andWhere('user.name LIKE :userName', { userName: `%${userName}%` })
+    .andWhere('consumptionRecord.createTime Between :startTime and :endTime', { startTime, endTime })
+    .orderBy('consumptionRecord.createTime', 'DESC')
+    .offset(pageSize * (page - 1))
+    .limit(pageSize)
+    
+    return { 
+      list: await qb.getRawMany(),
+      total: await qb.getCount()
+    };
   }
 
   findOne(id: number) {
