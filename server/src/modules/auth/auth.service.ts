@@ -2,12 +2,14 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
+  ForbiddenException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compareSync } from 'bcryptjs';
 import { User } from 'src/modules/user/entities/user.entity';
+import { UserStatus } from 'src/core/enums/common.enum';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +42,10 @@ export class AuthService {
     }
     if (!compareSync(password, user.password)) {
       throw new BadRequestException('密码错误！');
+    }
+
+    if (user.status === UserStatus.DISABLED) {
+      throw new ForbiddenException('该账号已经停用，请联系管理员！');
     }
 
     const payload = { account: user.account, sub: user.id };
