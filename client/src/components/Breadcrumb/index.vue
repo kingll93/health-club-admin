@@ -59,7 +59,6 @@ function isDashboard(route: RouteLocationMatched) {
 }
 
 function handleLink(item: any) {
-  console.log(item)
   const { redirect, path } = item;
   if (redirect) {
     router.push(redirect).catch(err => {

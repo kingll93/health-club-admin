@@ -1,27 +1,27 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance, Canceler } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource, Canceler } from 'axios';
 import { ElMessage } from 'element-plus';
 import { localStorage } from '@/utils/storage';
 import useStore from '@/store';
 import router from '@/router';
 
-const CancelToken = axios.CancelToken;
 
-// 防止 401 或 403 是并发多余请求
-let cancelerList: Canceler[] = [];
+let cancelTokenSource: CancelTokenSource = axios.CancelToken.source();
+function cancel() {
+  cancelTokenSource.cancel();
+  cancelTokenSource = axios.CancelToken.source();
+}
 
 // 创建 axios 实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 50000,
-  headers: { 'Content-Type': 'application/json;charset=utf-8' },
-  cancelToken: new CancelToken(function (c) {
-    cancelerList.push(c);
-  })
+  headers: { 'Content-Type': 'application/json;charset=utf-8' }
 });
 
 // 请求拦截器
 service.interceptors.request.use(
   (config: AxiosRequestConfig) => {
+    config.cancelToken = cancelTokenSource.token;
     if (!config.headers) {
       throw new Error(`Expected 'config' and 'config.headers' not to be undefined`);
     }
@@ -48,10 +48,7 @@ service.interceptors.response.use(
 
     const { data, status } = error.response;
     if (status === 401) {
-      cancelerList.forEach(cancel => {
-        cancel()
-      });
-      cancelerList = [];
+      cancel()
       ElMessage({
         message: '用户验证失败，请重新登录',
         type: 'error'
@@ -63,7 +60,6 @@ service.interceptors.response.use(
         type: 'error'
       });
     }
-
     return Promise.reject(new Error(data.message || 'Error'));
   }
 );
