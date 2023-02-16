@@ -1,7 +1,5 @@
 import {
   Controller,
-  UseInterceptors,
-  ClassSerializerInterceptor,
   Post,
   Body,
   Req,
@@ -19,7 +17,6 @@ export class AuthController {
 
   @ApiOperation({ summary: '登录' })
   @NoAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post('login')
   login(@Body() user: LoginDto, @Req() req) {
     return this.authService.login(user.account, user.password);
@@ -27,7 +24,6 @@ export class AuthController {
 
   @ApiOperation({ summary: '根据token获取用户详情' })
   @ApiBearerAuth()
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('user')
   user(@Req() req) {
     return req.user;

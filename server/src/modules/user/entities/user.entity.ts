@@ -7,9 +7,10 @@ import {
   UpdateDateColumn,
   BeforeUpdate,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import * as dayjs from 'dayjs';
+import { Exclude, Transform } from 'class-transformer';
 import { genSalt, hash, compare, genSaltSync, hashSync } from 'bcryptjs';
-import { UserType, StatusValue } from 'src/core/enums/common.enum';
+import { UserType, UserStatus } from 'src/core/enums/common.enum';
 
 @Entity('user')
 export class User {
@@ -34,21 +35,23 @@ export class User {
 
   @Column({
     type: 'tinyint',
-    default: StatusValue.ENABLED,
+    default: UserStatus.ENABLED,
   })
-  status: StatusValue;
+  status: UserStatus;
 
   @CreateDateColumn({
     type: 'timestamp',
     name: 'create_time',
   })
-  createTime: Date;
+  @Transform(params => dayjs(params.value).format('YYYY-MM-DD HH:mm:ss'), { toPlainOnly: true })
+  createTime: string;
 
   @UpdateDateColumn({
     type: 'timestamp',
     name: 'update_time',
   })
-  updateTime: Date;
+  @Transform(params => dayjs(params.value).format('YYYY-MM-DD HH:mm:ss'), { toPlainOnly: true })
+  updateTime: string;
 
   @BeforeInsert()
   @BeforeUpdate()

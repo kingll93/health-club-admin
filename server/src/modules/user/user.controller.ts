@@ -6,8 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
-  ClassSerializerInterceptor,
   Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -22,7 +20,6 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: '新增用户' })
-  @UseInterceptors(ClassSerializerInterceptor)
   @NoAuth()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -50,7 +47,6 @@ export class UserController {
   // }
 
   @ApiOperation({ summary: '修改密码' })
-  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth()
   @Patch('change-password')
   update(@Req() req, @Body() updateUserDto: ChangePassWordDto) {

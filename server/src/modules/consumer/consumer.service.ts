@@ -54,7 +54,7 @@ export class ConsumerService {
       ...{ createTime: Between(startTime, endTime) },
     }
     const consumers = await this.consumerRepository.findAndCount({ where, order: { cardNum: 'DESC' }, skip: pageSize * (page - 1), take: pageSize })
-    consumers[0] = consumers[0].map(consumer => consumer.toResponseData());
+    // consumers[0] = consumers[0].map(consumer => consumer.toResponseData());
     return  { list: consumers[0], total: consumers[1] }
   }
 

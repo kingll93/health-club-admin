@@ -11,7 +11,7 @@ export enum ConsumptionType {
   /** 染发 */
   HAIR_DYE = 2,
   /** 其他 */
-  OTHER = 9,
+  OTHER = 9
 }
 
 export enum HairType {
@@ -23,4 +23,18 @@ export enum HairType {
   LONE = 3,
   /** 超长发 */
   EXTRA_LONG = 4
+}
+
+export enum UserType {
+  /** 管理员 */
+  ADMIN = 0,
+  /** 普通用户 */
+  USER = 1
+}
+
+export enum UserStatus {
+  /** 禁用 */
+  DISABLED = 0,
+  /** 正常使用 */
+  ENABLED = 1,
 }

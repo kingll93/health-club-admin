@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, reactive, toRefs, ref } from 'vue';
+import { onMounted, reactive, toRefs, ref, watch, nextTick } from 'vue';
 import { ElForm, ElMessageBox, ElMessage } from 'element-plus';
 import { ConsumptionRecord, ConsumptionRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
@@ -14,28 +14,33 @@ import { ConsumptionTypeMap, HairTypeMap } from '../consumer/index.vue';
 import { ConsumptionType, HairType } from '@/utils/enums';
 import { printConsumption } from '@/utils/print';
 
-
 // 属性名必须和元素的ref属性值一致
 const queryFormRef = ref(ElForm);
 
 const state = reactive({
   loading: false,
-  dateRange: null,
+  dateRange: null as null | string[],
   queryParams: {
     page: 1,
     pageSize: 10
   } as ConsumptionRecordQueryParam,
   list: [] as ConsumptionRecord[],
-  total: 0,
+  total: 0
 });
 
 const { loading, dateRange, queryParams, list, total } = toRefs(state);
 
-function handleQuery() {
-  if (state.dateRange) {
-    state.queryParams.startTime = state.dateRange[0];
-    state.queryParams.endTime = state.dateRange[1];
+watch(dateRange, newValue => {
+  if (newValue) {
+    state.queryParams.startTime = newValue[0];
+    state.queryParams.endTime = newValue[1];
+  } else {
+    delete state.queryParams.startTime;
+    delete state.queryParams.endTime;
   }
+});
+
+function handleQuery() {
   state.loading = true;
   getConsumptionRecordList(state.queryParams).then(({ data }) => {
     state.list = data.list;
@@ -46,10 +51,10 @@ function handleQuery() {
 
 function resetQuery() {
   state.dateRange = null;
-  delete state.queryParams.startTime;
-  delete state.queryParams.endTime;
-  queryFormRef.value.resetFields();
-  handleQuery();
+  nextTick(() => {
+    queryFormRef.value.resetFields();
+    handleQuery();
+  });
 }
 
 function handlePrint(row: ConsumptionRecord) {
@@ -59,8 +64,8 @@ function handlePrint(row: ConsumptionRecord) {
     consumerName: row.consumerName,
     content: ConsumptionTypeMap[row.consumptionType as ConsumptionType] + '--' + HairTypeMap[row.hairType as HairType],
     amount: row.amount + '',
-    balance: row.balance + '',
-  })
+    balance: row.balance + ''
+  });
 }
 
 function handleDelete(row: ConsumptionRecord) {
@@ -76,13 +81,12 @@ function handleDelete(row: ConsumptionRecord) {
         handleQuery();
       });
     })
-    .catch(() => { });
+    .catch(() => {});
 }
 
 onMounted(() => {
   handleQuery();
 });
-
 </script>
 
 <template>
@@ -97,8 +101,7 @@ onMounted(() => {
       </el-form-item>
 
       <el-form-item>
-        <el-date-picker v-model="dateRange" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-          value-format="YYYY-MM-DD HH:mm:ss" />
+        <el-date-picker v-model="dateRange" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" value-format="YYYY-MM-DD HH:mm:ss" />
       </el-form-item>
 
       <el-form-item>
@@ -119,7 +122,8 @@ onMounted(() => {
         <template #default="scope">
           <span>{{ scope.row.hairType ? HairTypeMap[scope.row.hairType as HairType] : '-' }}</span>
         </template>
-      </el-table-column>>
+      </el-table-column>
+      >
       <el-table-column prop="amount" label="消费金额" />
       <el-table-column prop="balance" label="本次消费后余额" />
       <el-table-column prop="createTime" label="消费时间" />
@@ -134,11 +138,8 @@ onMounted(() => {
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination v-if="total > 0" :total="total" v-model:page="queryParams.page" v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery" />
+    <pagination v-if="total > 0" :total="total" v-model:page="queryParams.page" v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
   </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

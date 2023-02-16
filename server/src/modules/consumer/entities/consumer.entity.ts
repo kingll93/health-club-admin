@@ -12,6 +12,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Transform } from 'class-transformer';
 import * as dayjs from 'dayjs';
 import { Gender, CardType, IsDeleted } from 'src/core/enums/common.enum';
 
@@ -42,14 +43,10 @@ export class Consumer {
   isDeleted: IsDeleted;
 
   @CreateDateColumn({ type: 'timestamp', name: 'create_time' })
+  @Transform(params => dayjs(params.value).format('YYYY-MM-DD HH:mm:ss'), { toPlainOnly: true })
   createTime: string;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'update_time' })
+  @Transform(params => dayjs(params.value).format('YYYY-MM-DD HH:mm:ss'), { toPlainOnly: true })
   updateTime: string;
-
-  toResponseData() {
-    this.createTime = dayjs(this.createTime).format('YYYY-MM-DD HH:mm:ss');
-    this.updateTime = dayjs(this.updateTime).format('YYYY-MM-DD HH:mm:ss');
-    return this;
-  }
 }

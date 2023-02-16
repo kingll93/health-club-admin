@@ -18,7 +18,7 @@ export interface AppState {
  */
 export interface UserState {
   token: string;
-  info?: UserData;
+  info: UserData | null;
 }
 
 /**
