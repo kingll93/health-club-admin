@@ -1,6 +1,6 @@
-import { LoginFormData, LoginResponseData, RefreshTokenData, UserData, ChangePasswordParam, RegisterFormData } from "@/types";
-import request from "@/utils/request";
-import { AxiosPromise } from "axios";
+import { LoginFormData, LoginResponseData, RefreshTokenData, UserInfo } from '@/types';
+import request from '@/utils/request';
+import { AxiosPromise } from 'axios';
 
 /**
  * 登录
@@ -8,9 +8,9 @@ import { AxiosPromise } from "axios";
  */
 export function login(data: LoginFormData): AxiosPromise<LoginResponseData> {
   return request({
-    url: "/auth/login",
-    method: "post",
-    data,
+    url: '/auth/login',
+    method: 'post',
+    data
   });
 }
 
@@ -21,39 +21,17 @@ export function login(data: LoginFormData): AxiosPromise<LoginResponseData> {
 export function refreshToken(token: string): AxiosPromise<RefreshTokenData> {
   return request({
     url: `/authority/refresh/${token}`,
-    method: "post",
+    method: 'post'
   });
 }
 
 /**
  * 获取用户详情
  */
- export function getUser(): AxiosPromise<UserData> {
+export function getUser(): AxiosPromise<UserInfo> {
   return request({
-    url: "/auth/user",
-    method: "get"
-  });
-}
-
-/**
- * 修改密码
- */
- export function changePassword(data: ChangePasswordParam) {
-  return request({
-    url: "/user/change-password",
-    method: "patch",
-    data
-  });
-}
-
-/**
- * 注册用户
- */
-export function register(data: RegisterFormData) {
-  return request({
-    url: "/user",
-    method: "post",
-    data
+    url: '/auth/user',
+    method: 'get'
   });
 }
 
@@ -62,7 +40,7 @@ export function register(data: RegisterFormData) {
  */
 export function logout() {
   return request({
-    url: "/youlai-auth/oauth/logout",
-    method: "delete",
+    url: '/youlai-auth/oauth/logout',
+    method: 'delete'
   });
 }

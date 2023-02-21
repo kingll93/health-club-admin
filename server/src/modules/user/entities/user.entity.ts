@@ -10,7 +10,7 @@ import {
 import * as dayjs from 'dayjs';
 import { Exclude, Transform } from 'class-transformer';
 import { genSalt, hash, compare, genSaltSync, hashSync } from 'bcryptjs';
-import { UserType, UserStatus } from 'src/core/enums/common.enum';
+import { UserRole, UserStatus } from 'src/core/enums/common.enum';
 
 @Entity('user')
 export class User {
@@ -29,9 +29,9 @@ export class User {
 
   @Column({
     type: 'tinyint',
-    default: UserType.USER,
+    default: UserRole.USER,
   })
-  role: UserType;
+  role: UserRole;
 
   @Column({
     type: 'tinyint',

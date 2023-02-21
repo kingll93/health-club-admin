@@ -10,7 +10,7 @@ export function createConsumer(data: Consumer) {
   });
 }
 
-export function editConsumer(data: Consumer) {
+export function updateConsumer(data: Consumer) {
   return request({
     url: `/consumer/${data.id}`,
     method: 'patch',

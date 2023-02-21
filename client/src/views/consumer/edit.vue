@@ -10,7 +10,7 @@ import { ElForm, ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router';
 import { Consumer } from '@/types';
 import router from '@/router';
-import { createConsumer, editConsumer, getConsumer } from '@/api/consumer';
+import { createConsumer, updateConsumer, getConsumer } from '@/api/consumer';
 import { Gender } from '@/utils/enums';
 
 const route = useRoute();
@@ -59,7 +59,7 @@ function handleCancel() {
 function handleSubmit() {
     dataFormRef.value.validate((isValid: boolean) => {
         if (isValid) {
-            const handler = state.formData.id ? editConsumer : createConsumer;
+            const handler = state.formData.id ? updateConsumer : createConsumer;
             handler(state.formData).then(res => {
                 ElMessage({
                     type: 'success',

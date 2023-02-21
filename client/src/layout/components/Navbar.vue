@@ -24,9 +24,6 @@
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item v-if="user?.info?.role === UserType.ADMIN" divided @click="handleCreateUser">
-              创建用户
-            </el-dropdown-item>
             <el-dropdown-item divided @click="handleChangePassword">
               修改密码
             </el-dropdown-item>
@@ -37,29 +34,23 @@
         </template>
       </el-dropdown>
     </div>
-
-    <register ref="registerComp"></register>
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
-import { changePassword } from '@/api/login';
+import { changePassword } from '@/api/user';
 import useStore from '@/store';
-import { UserType } from '@/utils/enums';
 
 // 组件依赖
 import Hamburger from '@/components/Hamburger/index.vue';
 import Breadcrumb from '@/components/Breadcrumb/index.vue';
 import Screenfull from '@/components/Screenfull/index.vue';
 import SizeSelect from '@/components/SizeSelect/index.vue';
-import Register from './Register.vue';
 
 // 图标依赖
 import { CaretBottom } from '@element-plus/icons-vue';
-
-const registerComp = ref<InstanceType<typeof Register> | null>(null);
 
 const { app, user } = useStore();
 
@@ -88,24 +79,18 @@ function logout() {
   });
 }
 
-function handleCreateUser() {
-  registerComp.value?.show();
-}
-
 function handleChangePassword() {
   ElMessageBox.prompt('请输入新密码', '提示', {
     inputType: 'password',
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-    // inputErrorMessage: '邮箱格式不正确'
+    inputPattern: /.{6,12}/,
+    inputErrorMessage: '密码长度在6-12位之间'
   }).then(({ value }) => {
     if (!value.trim()) {
       return
     }
-    changePassword({
-      password: value.trim()
-    }).then(() => {
+    changePassword(value.trim()).then(() => {
       ElMessage({
         type: 'success',
         message: '修改成功,请重新登录'
@@ -121,7 +106,6 @@ function handleChangePassword() {
 
 onMounted(() => {
   app.getTodayStatistic();
-  user.getUserInfo();
 });
 </script>
   

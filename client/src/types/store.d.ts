@@ -1,5 +1,5 @@
-import { RouteRecordRaw, RouteLocationNormalized } from 'vue-router';
-import { UserData } from './api/login';
+import { RouteRecordRaw } from 'vue-router';
+import { UserInfo } from './api/login';
 import { TodayStatistic } from './api/dashboard';
 /**
  * App类型声明
@@ -18,7 +18,7 @@ export interface AppState {
  */
 export interface UserState {
   token: string;
-  info: UserData | null;
+  userInfo: UserInfo | null;
 }
 
 /**
@@ -34,7 +34,6 @@ export interface SettingState {
 /**
  * 菜单状态类型声明
  */
- export interface MenuState {
-  topMenus: RouteRecordRaw[]; // 顶部菜单
-  activeTopMenu: RouteRecordRaw; // 激活的顶部菜单
+ export interface PermissionState {
+  routes: RouteRecordRaw[];
 }
