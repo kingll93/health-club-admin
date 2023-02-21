@@ -25,7 +25,7 @@ export enum HairType {
   EXTRA_LONG = 4
 }
 
-export enum UserType {
+export enum UserRole {
   /** 管理员 */
   ADMIN = 0,
   /** 普通用户 */
