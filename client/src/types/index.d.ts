@@ -10,6 +10,7 @@ export * from './api/dashboard/index';
 export * from './api/consumer/index';
 export * from './api/recharge-record/index';
 export * from './api/consumption-record/index';
+export * from './api/user/index';
 
 export * from './store';
 

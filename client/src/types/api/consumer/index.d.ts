@@ -20,7 +20,7 @@ import { Gender, ConsumptionType, HairType } from "@/utils/enums";
  * 客户查询参数类型声明
  */
 export interface ConsumerQueryParam extends PageQueryParam, PageOrderParam {
-  name?: number;
+  name?: string;
   phone?: string;
   gender?: number;
   startTime?: string;

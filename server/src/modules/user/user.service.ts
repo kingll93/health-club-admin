@@ -1,10 +1,12 @@
-import { Injectable, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like, Not } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FindUserDto } from './dto/find-user.dto';
 import { ChangePassWordDto, UpdateUserDto } from './dto/update-user.dto';
+import { UserRole } from 'src/core/enums/common.enum';
 
 @Injectable()
 export class UserService {
@@ -27,21 +29,44 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  // findAll() {
-  //   return `This action returns all user`;
-  // }
+  async findAll(dto: FindUserDto) {
+    const {
+      name = '',
+      page = 1,
+      pageSize = 10
+    } = dto;
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
+    const [ list, total ] = await this.userRepository.findAndCount({
+      where: {
+        ...!!name ? { name: Like(`%${name}%`) } : null,
+        role: Not(UserRole.ADMIN)
+      },
+      skip: pageSize * (page - 1),
+      take: 10
+    })
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+    return {
+      list,
+      total
+    }
+  }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+  findOne(id: number) {
+    return this.userRepository.findOne({
+      where: {
+        id
+      }
+    })
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const existUser = await this.userRepository.findOneBy({id});
+    if (!existUser) {
+      throw new BadRequestException(`id为${id}的用户不存在`);
+    }
+    const updateUser = this.userRepository.merge(existUser, updateUserDto)
+    return await this.userRepository.save(updateUser)
+  }
 
   async changePassword(user: User, dto: ChangePassWordDto) {
     const updateUser = this.userRepository.merge(user, {

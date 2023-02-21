@@ -2,16 +2,14 @@ import { defineStore } from 'pinia';
 import { LoginFormData, UserState } from '@/types';
 import { localStorage } from '@/utils/storage';
 import { login, getUser, refreshToken } from '@/api/login';
+import { resetRouter } from '@/router';
 
 const useUserStore = defineStore({
   id: 'user',
   state: (): UserState => ({
     token: localStorage.get('accessToken') || '',
-    info: null
+    userInfo: null
   }),
-  getters: {
-    // userInfo: state => JSON.parse(decodeURIComponent(escape(window.atob(state.token.split('.')[1]))))
-  },
   actions: {
     async RESET_STATE() {
       this.$reset();
@@ -46,9 +44,9 @@ const useUserStore = defineStore({
      *  获取用户详情
      */
     getUserInfo() {
-      return new Promise((resolve, reject) => {
+      return new Promise<UserState['userInfo']>((resolve, reject) => {
         getUser().then(response => {
-          this.info = response.data;
+          this.userInfo = response.data;
           resolve(response.data)
         })
       });
@@ -76,6 +74,7 @@ const useUserStore = defineStore({
     logout() {
       return new Promise((resolve, reject) => {
         this.resetToken();
+        resetRouter();
         resolve(null);
       });
     },

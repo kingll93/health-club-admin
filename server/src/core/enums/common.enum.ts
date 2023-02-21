@@ -12,7 +12,7 @@ export enum CardType {
   MEMBER = 1,
 }
 
-export enum UserType {
+export enum UserRole {
   /** 管理员 */
   ADMIN = 0,
   /** 普通用户 */

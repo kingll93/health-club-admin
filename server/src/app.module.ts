@@ -6,6 +6,7 @@ import envConfig from '../config/env';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
+import { RoleGuard } from './modules/auth/guards/role.guard';
 import { ConsumerModule } from './modules/consumer/consumer.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -50,6 +51,10 @@ import { StatisticModule } from './modules/statistic/statistic.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
     },
     {
       provide: APP_INTERCEPTOR,
