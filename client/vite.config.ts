@@ -31,6 +31,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         // }
         [env.VITE_APP_BASE_API]: {
           target: 'http://localhost:3000',
+          // target: 'http://101.33.232.222',
           changeOrigin: true,
         },
       }

@@ -14,6 +14,12 @@ export enum ConsumptionType {
   OTHER = 9
 }
 
+export const ConsumptionTypeMap = {
+  [ConsumptionType.HAIR_CARE]: '养发',
+  [ConsumptionType.HAIR_DYE]: '染发',
+  [ConsumptionType.OTHER]: '其他'
+};
+
 export enum HairType {
   /** 短发 */
   SHORT = 1,
@@ -24,6 +30,13 @@ export enum HairType {
   /** 超长发 */
   EXTRA_LONG = 4
 }
+
+export const HairTypeMap = {
+  [HairType.SHORT]: '短发',
+  [HairType.MIDDLE]: '中发',
+  [HairType.LONE]: '长发',
+  [HairType.EXTRA_LONG]: '超长发'
+};
 
 export enum UserRole {
   /** 管理员 */
@@ -36,5 +49,5 @@ export enum UserStatus {
   /** 禁用 */
   DISABLED = 0,
   /** 正常使用 */
-  ENABLED = 1,
+  ENABLED = 1
 }
