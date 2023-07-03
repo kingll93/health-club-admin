@@ -4,7 +4,6 @@ import { localStorage } from '@/utils/storage';
 import useStore from '@/store';
 import router from '@/router';
 
-
 let cancelTokenSource: CancelTokenSource = axios.CancelToken.source();
 function cancel() {
   cancelTokenSource.cancel();
@@ -39,7 +38,8 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response.data;
+    response.data = response.data.data;
+    return response;
   },
   error => {
     if (!error.response) {
@@ -48,7 +48,7 @@ service.interceptors.response.use(
 
     const { data, status } = error.response;
     if (status === 401) {
-      cancel()
+      cancel();
       ElMessage({
         message: '用户验证失败，请重新登录',
         type: 'error'

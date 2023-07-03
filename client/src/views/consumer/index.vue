@@ -1,17 +1,4 @@
 <script lang="ts">
-export const ConsumptionTypeMap = {
-  [ConsumptionType.HAIR_CARE]: '养发',
-  [ConsumptionType.HAIR_DYE]: '染发',
-  [ConsumptionType.OTHER]: '其他'
-}
-
-export const HairTypeMap = {
-  [HairType.SHORT]: '短发',
-  [HairType.MIDDLE]: '中发',
-  [HairType.LONE]: '长发',
-  [HairType.EXTRA_LONG]: '超长发',
-}
-
 export default {
   name: 'consumer'
 };
@@ -26,7 +13,7 @@ import { getConsumerList, deleteConsumer } from '@/api/consumer';
 import { recharge } from '@/api/recharge-record';
 import { consumption } from '@/api/consumption-record';
 import router from '@/router';
-import { ConsumptionType, Gender, HairType } from '@/utils/enums';
+import { ConsumptionType, ConsumptionTypeMap, Gender, HairType, HairTypeMap } from '@/utils/enums';
 import useStore from '@/store';
 
 // 属性名必须和元素的ref属性值一致
@@ -56,7 +43,7 @@ const state = reactive({
   rechargeForm: {} as ConsumerRechargeParam,
   consumptionForm: {
     consumptionType: ConsumptionType.HAIR_CARE,
-    hairType: HairType.SHORT,
+    hairType: HairType.SHORT
   } as ConsumerConsumptionParam
 });
 
@@ -109,7 +96,7 @@ function handleDelete(row: Consumer) {
         handleQuery();
       });
     })
-    .catch(() => { });
+    .catch(() => {});
 }
 
 function handleRecharge(row: Consumer) {
@@ -117,7 +104,7 @@ function handleRecharge(row: Consumer) {
   state.dialog = {
     visible: true,
     title: RECHARGE
-  }
+  };
 }
 
 function handleRechargeConfirm() {
@@ -132,9 +119,9 @@ function handleRechargeConfirm() {
         handleCloseDialog();
         handleQuery();
         app.getTodayStatistic();
-      })
+      });
     }
-  })
+  });
 }
 
 function handleConsumption(row: Consumer) {
@@ -143,7 +130,7 @@ function handleConsumption(row: Consumer) {
   state.dialog = {
     visible: true,
     title: CONSUMPTION
-  }
+  };
 }
 
 function handleConsumptionConfirm(row: Consumer) {
@@ -158,9 +145,9 @@ function handleConsumptionConfirm(row: Consumer) {
         handleCloseDialog();
         handleQuery();
         app.getTodayStatistic();
-      })
+      });
     }
-  })
+  });
 }
 
 function handleCloseDialog() {
@@ -169,7 +156,7 @@ function handleCloseDialog() {
   state.dialog = {
     visible: false,
     title: ''
-  }
+  };
 }
 
 function getPrice() {
@@ -186,10 +173,10 @@ function getPrice() {
       [HairType.LONE]: 300,
       [HairType.EXTRA_LONG]: 350
     }
-  }
-  state.consumptionForm.amount = state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType!]
+  };
+  state.consumptionForm.amount =
+    state.consumptionForm.consumptionType === ConsumptionType.OTHER ? 0 : price[state.consumptionForm.consumptionType][state.consumptionForm.hairType!];
 }
-
 
 onMounted(() => {
   handleQuery();
@@ -219,8 +206,7 @@ onMounted(() => {
       </el-form-item>
 
       <el-form-item>
-        <el-date-picker v-model="dateRange" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-          value-format="YYYY-MM-DD HH:mm:ss" />
+        <el-date-picker v-model="dateRange" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" value-format="YYYY-MM-DD HH:mm:ss" />
       </el-form-item>
 
       <el-form-item>
@@ -251,8 +237,7 @@ onMounted(() => {
     </el-table>
 
     <!-- 分页工具条 -->
-    <pagination v-if="total > 0" :total="total" v-model:page="queryParams.page" v-model:limit="queryParams.pageSize"
-      @pagination="handleQuery" />
+    <pagination v-if="total > 0" :total="total" v-model:page="queryParams.page" v-model:limit="queryParams.pageSize" @pagination="handleQuery" />
 
     <!-- 弹窗 -->
     <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" @close="handleCloseDialog">
@@ -264,10 +249,14 @@ onMounted(() => {
         <el-form-item label="当前余额:">
           <el-input disabled :value="currentConsumer.balance" />
         </el-form-item>
-        <el-form-item prop="amount" label="充值金额:" :rules="[
-          { required: true, message: '充值金额不能为空', trigger: 'blur' },
-          { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
-        ]">
+        <el-form-item
+          prop="amount"
+          label="充值金额:"
+          :rules="[
+            { required: true, message: '充值金额不能为空', trigger: 'blur' },
+            { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
+          ]"
+        >
           <el-input type="number" v-model.number="rechargeForm.amount" />
         </el-form-item>
         <el-form-item prop="remark" label="备注:">
@@ -279,8 +268,7 @@ onMounted(() => {
         </el-form-item>
       </el-form>
       <!-- 消费 -->
-      <el-form v-show="dialog.title === CONSUMPTION" ref="consumptionFormRef" :model="consumptionForm"
-        label-width="100px">
+      <el-form v-show="dialog.title === CONSUMPTION" ref="consumptionFormRef" :model="consumptionForm" label-width="100px">
         <el-form-item label="姓名:">
           <el-input disabled :value="currentConsumer.name" />
         </el-form-item>
@@ -289,20 +277,22 @@ onMounted(() => {
         </el-form-item>
         <el-form-item prop="consumptionType" label="消费类型:">
           <el-select v-model="consumptionForm.consumptionType" @change="getPrice">
-            <el-option v-for="(label, value) in ConsumptionTypeMap" :key="value" :label="label" :value="Number(value)">
-            </el-option>
+            <el-option v-for="(label, value) in ConsumptionTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item v-if="consumptionForm.consumptionType !== ConsumptionType.OTHER" prop="hairType" label="头发类型:">
           <el-select v-model="consumptionForm.hairType" @change="getPrice">
-            <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)">
-            </el-option>
+            <el-option v-for="(label, value) in HairTypeMap" :key="value" :label="label" :value="Number(value)"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="amount" label="消费金额:" :rules="[
-          { required: true, message: '消费金额不能为空', trigger: 'blur' },
-          { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
-        ]">
+        <el-form-item
+          prop="amount"
+          label="消费金额:"
+          :rules="[
+            { required: true, message: '消费金额不能为空', trigger: 'blur' },
+            { type: 'number', message: '金额必须为数字值', trigger: 'blur' }
+          ]"
+        >
           <el-input type="number" v-model.number="consumptionForm.amount" />
         </el-form-item>
         <el-form-item prop="remark" label="备注:">
@@ -317,6 +307,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

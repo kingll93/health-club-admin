@@ -4,12 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-} from 'vue';
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted } from 'vue';
 import { init, EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import resize from '@/utils/resize';
@@ -18,22 +13,22 @@ import { getDailyConsumption } from '@/api/dashboard';
 const props = defineProps({
   id: {
     type: String,
-    default: 'barChart',
+    default: 'barChart'
   },
   className: {
     type: String,
-    default: '',
+    default: ''
   },
   width: {
     type: String,
     default: '200px',
-    required: true,
+    required: true
   },
   height: {
     type: String,
     default: '200px',
-    required: true,
-  },
+    required: true
+  }
 });
 
 const { mounted, chart, beforeDestroy, activated, deactivated } = resize();
@@ -53,24 +48,27 @@ function initChart() {
           fontSize: 18,
           fontStyle: 'normal',
           fontWeight: 'bold',
-          color: '#337ecc',
-        },
+          color: '#337ecc'
+        }
       },
-      legend: {},
+      legend: {
+        top: '5%'
+      },
       grid: {
-        left: '2%',
-        right: '2%',
-        bottom: '10%',
-        containLabel: true,
+        top: '18%',
+        left: '5%',
+        right: '5%',
+        bottom: '15%',
+        containLabel: true
       },
       tooltip: {
         trigger: 'axis',
         axisPointer: {
           type: 'cross',
           crossStyle: {
-            color: '#999',
-          },
-        },
+            color: '#999'
+          }
+        }
       },
       xAxis: [
         {
@@ -78,18 +76,26 @@ function initChart() {
           type: 'category',
           data: data.map(item => item.date),
           axisPointer: {
-            type: 'shadow',
-          },
-        },
+            type: 'shadow'
+          }
+        }
       ],
       yAxis: [
         {
           name: '单位（元）',
           type: 'value',
           axisLabel: {
-            formatter: '{value} ',
-          },
+            formatter: '{value} '
+          }
+        }
+      ],
+      dataZoom: [
+        {
+          type: 'inside'
         },
+        {
+          type: 'slider'
+        }
       ],
       series: [
         {
@@ -100,9 +106,9 @@ function initChart() {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#83bff6' },
               { offset: 0.5, color: '#188df0' },
-              { offset: 1, color: '#188df0' },
-            ]),
-          },
+              { offset: 1, color: '#188df0' }
+            ])
+          }
         },
         {
           name: '散客消费',
@@ -112,14 +118,35 @@ function initChart() {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: '#25d73c' },
               { offset: 0.5, color: '#1bc23d' },
-              { offset: 1, color: '#179e61' },
-            ]),
-          },
+              { offset: 1, color: '#179e61' }
+            ])
+          }
         },
-      ],
+        {
+          name: '总消费',
+          type: 'line',
+          data: data.map(item => item.memberConsumption + item.guestConsumption),
+          markPoint: {
+            data: [
+              {
+                type: 'max',
+                name: 'Max',
+                symbolSize: value => Math.max((value.toString().length + 1) * 10, 50)
+              },
+              { type: 'min', name: 'Min' }
+            ]
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }]
+          },
+          itemStyle: {
+            color: '#fac858'
+          }
+        }
+      ]
     } as EChartsOption);
     chart.value = barChart;
-  })
+  });
 }
 
 onBeforeUnmount(() => {

@@ -1,3 +1,5 @@
+import { ConsumptionType } from '@/utils/enums';
+
 /**
  * 统计结果类型声明
  */
@@ -38,8 +40,9 @@ export type DailyRechargeList = Array<{
  * 消费类型统计类型声明
  */
 export type ConsumptionCategory = Array<{
-  type: number;
-  value: number;
+  type: ConsumptionType;
+  count: number;
+  amount: number;
 }>;
 
 /**
