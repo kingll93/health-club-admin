@@ -10,7 +10,7 @@ import { ElForm, ElMessageBox, ElMessage } from 'element-plus';
 import { ConsumptionRecord, ConsumptionRecordQueryParam } from '@/types';
 import { Search, Refresh } from '@element-plus/icons-vue';
 import { getConsumptionRecordList, deleteConsumptionRecord } from '@/api/consumption-record';
-import { ConsumptionTypeMap, HairTypeMap } from '../consumer/index.vue';
+import { ConsumptionTypeMap, HairTypeMap } from '@/utils/enums';
 import { ConsumptionType, HairType } from '@/utils/enums';
 import { printConsumption } from '@/utils/print';
 

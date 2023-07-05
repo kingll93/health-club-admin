@@ -15,12 +15,16 @@ import { HttpExceptionFilter } from './core/filter/http-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
 import logger from './log/logger';
 
+const staticPath = path.join(
+  path.resolve(process.cwd(), '../', 'client', 'dist'),
+);
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger,
   });
   // https://blog.csdn.net/weixin_38007986/article/details/126910312
-  app.useStaticAssets(path.join(__dirname, '..', 'public'));
+  app.useStaticAssets(staticPath);
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
