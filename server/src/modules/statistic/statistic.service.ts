@@ -48,33 +48,31 @@ export class StatisticService {
 
   async getTodayStatistic() {
     const today = dayjs().format('YYYY-MM-DD');
+
+    const startTime = `${today} 00:00:00`;
+    const endTime = `${today} 23:59:59`;
+
     const { guestConsumption, memberConsumption } = (
       await this.dataSource.query(`
       select 
-        sum(case when card_type = ${
-          CardType.GUEST
-        } then cr.amount else 0 end) guestConsumption,
-        sum(case when card_type = ${
-          CardType.MEMBER
-        } then cr.amount else 0 end) memberConsumption
+        sum(case when card_type = ${CardType.GUEST} then cr.amount else 0 end) guestConsumption,
+        sum(case when card_type = ${CardType.MEMBER} then cr.amount else 0 end) memberConsumption
       from consumption_record cr
       left join consumers c on c.id = cr.consumer_id
-      where cr.create_time between '${today + ' 00:00:00'}' and '${
-        today + ' 23:59:59'
-      } and cr.is_deleted = ${IsDeleted.NO}'
+      where cr.create_time between '${startTime}' and '${endTime}' and cr.is_deleted = ${IsDeleted.NO}
     `)
     )[0];
+
     const { memberRechange } = (
       await this.dataSource.query(`
       select 
         sum(rr.amount) memberRechange
       from recharge_record rr
       left join consumers c on c.id = rr.consumer_id
-      where c.card_type = ${CardType.MEMBER} and rr.create_time between '${
-        today + ' 00:00:00'
-      }' and '${today + ' 23:59:59'}' and rr.is_deleted = ${IsDeleted.NO}
+      where c.card_type = ${CardType.MEMBER} and rr.create_time between '${startTime}' and '${endTime}' and rr.is_deleted = ${IsDeleted.NO}
     `)
     )[0];
+
     return {
       guestConsumption: guestConsumption || 0,
       memberConsumption: memberConsumption || 0,
@@ -160,8 +158,7 @@ export class StatisticService {
   }
 
   async consumptionCategory(dto: StatisticDto) {
-    const { startTime = '', endTime = dayjs().format('YYYY-MM-DD') } =
-      dto;
+    const { startTime = '', endTime = dayjs().format('YYYY-MM-DD') } = dto;
     const result = await this.dataSource.query(`
       select
         count(*) count,
