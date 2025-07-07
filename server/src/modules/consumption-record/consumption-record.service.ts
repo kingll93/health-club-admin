@@ -156,50 +156,56 @@ export class ConsumptionRecordService {
   //   return `This action updates a #${id} consumptionRecord`;
   // }
 
-async remove(id: number) {
-  const queryRunner = this.dataSource.createQueryRunner();
-  await queryRunner.connect();
-  await queryRunner.startTransaction();
+  async remove(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-  try {
-    const record = await queryRunner.manager.findOneBy(ConsumptionRecord, { id });
-    if (!record) {
-      throw new NotFoundException(`id为${id}的消费订单不存在`);
+    try {
+      const record = await queryRunner.manager.findOneBy(ConsumptionRecord, {
+        id,
+      });
+      if (!record) {
+        throw new NotFoundException(`id为${id}的消费订单不存在`);
+      }
+
+      if (
+        dayjs(record.createTime).format('YYYY-MM-DD') !==
+        dayjs().format('YYYY-MM-DD')
+      ) {
+        throw new BadRequestException('只能删除当天的订单');
+      }
+
+      const balanceRecord = await queryRunner.manager.findOneBy(Balance, {
+        orderNum: record.orderNum,
+      });
+
+      const consumer = await queryRunner.manager.findOne(Consumer, {
+        where: { id: record.consumerId },
+        lock: { mode: 'pessimistic_write' },
+      });
+
+      if (!consumer) {
+        throw new NotFoundException(`id为${record.consumerId}的客户不存在`);
+      }
+
+      record.isDeleted = IsDeleted.YES;
+      balanceRecord.isDeleted = IsDeleted.YES;
+      consumer.balance += record.amount;
+
+      await queryRunner.manager.save(balanceRecord);
+      await queryRunner.manager.save(consumer);
+      const result = await queryRunner.manager.save(record);
+
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err instanceof HttpException
+        ? err
+        : new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
     }
-
-    if (
-      dayjs(record.createTime).format('YYYY-MM-DD') !==
-      dayjs().format('YYYY-MM-DD')
-    ) {
-      throw new BadRequestException('只能删除当天的订单');
-    }
-
-    const balanceRecord = await queryRunner.manager.findOneBy(Balance, { orderNum: record.orderNum });
-
-    const consumer = await queryRunner.manager.findOne(Consumer, {
-      where: { id: record.consumerId },
-      lock: { mode: 'pessimistic_write' }
-    });
-
-    if (!consumer) {
-      throw new NotFoundException(`id为${record.consumerId}的客户不存在`);
-    }
-
-    record.isDeleted = IsDeleted.YES;
-    balanceRecord.isDeleted = IsDeleted.YES;
-    consumer.balance += record.amount;
-
-    await queryRunner.manager.save(balanceRecord);
-    await queryRunner.manager.save(consumer);
-    const result = await queryRunner.manager.save(record);
-
-    await queryRunner.commitTransaction();
-    return result;
-
-  } catch (err) {
-    await queryRunner.rollbackTransaction();
-    throw err instanceof HttpException ? err : new InternalServerErrorException();
-  } finally {
-    await queryRunner.release();
   }
 }
